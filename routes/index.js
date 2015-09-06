@@ -25,7 +25,9 @@ router.get('/', function(req, res, next) {
         jsonObject[0][1].push(singleValue.lon);
         jsonObject[0][1].push(parseInt(singleValue.CO));
       }
-      res.render('index', { title: 'Express' });
+      jsonObject = JSON.stringify(jsonObject);
+      res.render('index', { title: 'Visualizations',
+                            data: jsonObject});
     });
   });
 });

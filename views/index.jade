@@ -1,5 +1,15 @@
-extends layout
-
-block content
-  h1= title
-  p Welcome to #{title}
+doctype html
+html
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="X-UA-Compatible", content="IE=Edge,chrome=1")
+    meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no")
+    title #{title}
+    script(src="javascripts/Cesium/Cesium.js")
+    style
+      |@import url(/javascripts/Cesium/Widgets/widgets.css); html, body, #cesiumContainer {width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;}
+  body
+    div(id="cesiumContainer")
+    script(type="text/javascript").
+      jsondata='!{data}';
+    script(src="javascripts/index/renderer.js")
