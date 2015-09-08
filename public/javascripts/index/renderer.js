@@ -226,7 +226,6 @@ WebGLGlobeDataSource.prototype.load = function(data) {
     // ["series2",[latitude, longitude, height, ... ]]
 
     // Loop over each series
-    console.log(data.length);
     for (var x = 0; x < data.length; x++) {
         var series = data[x];
         var seriesName = series[0];
@@ -281,7 +280,6 @@ WebGLGlobeDataSource.prototype.load = function(data) {
     entities.resumeEvents();
     this._changed.raiseEvent(this);
     this._setLoading(false);
-    console.log(entities);
 };
 
 WebGLGlobeDataSource.prototype._setLoading = function(isLoading) {
@@ -307,3 +305,14 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 viewer.clock.shouldAnimate = false;
 viewer.dataSources.add(dataSource);
 
+//After the initial load, create buttons to let the user switch among series. 
+function createSeriesSetter(seriesName) {
+    return function() {
+        dataSource.seriesToDisplay = seriesName;
+    };
+}
+
+for (var i = 0; i < dataSource.seriesNames.length; i++) {
+    var seriesName = dataSource.seriesNames[i];
+    Manager.addToolbarButton(seriesName, createSeriesSetter(seriesName));
+}
