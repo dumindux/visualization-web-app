@@ -312,7 +312,12 @@ function createSeriesSetter(seriesName) {
     };
 }
 
+var options = [{text : 'Gas Type'}];
 for (var i = 0; i < dataSource.seriesNames.length; i++) {
     var seriesName = dataSource.seriesNames[i];
-    Manager.addToolbarButton(seriesName, createSeriesSetter(seriesName));
+    options.push({text: seriesName, onselect: createSeriesSetter(seriesName)});
 }
+
+Manager.addToolbarMenu(options);
+    
+document.getElementById('toolbar').style.width = '10%';
