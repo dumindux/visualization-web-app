@@ -23,7 +23,7 @@ var WebGLGlobeDataSource = function(name) {
     this._entityCollection = new Cesium.EntityCollection();
     this._seriesNames = [];
     this._seriesToDisplay = undefined;
-    this._heightScale = 10000;
+    this._heightScale = 10000000;
 };
 
 Object.defineProperties(WebGLGlobeDataSource.prototype, {
@@ -126,7 +126,7 @@ Object.defineProperties(WebGLGlobeDataSource.prototype, {
         },
         set : function(value) {
             this._seriesToDisplay = value;
-            
+
             //Iterate over all entities and set their show property
             //to true only if they are part of the current series.
             var collection = this._entityCollection;
@@ -182,9 +182,9 @@ WebGLGlobeDataSource.prototype.loadUrl = function(url) {
     return Cesium.when(Cesium.loadJson(url), function(json) {
         return that.load(json, url);
     }).otherwise(function(error) {
-        //Otherwise will catch any errors or exceptions that occur 
-        //during the promise processing. When this happens, 
-        //we raise the error event and reject the promise. 
+        //Otherwise will catch any errors or exceptions that occur
+        //during the promise processing. When this happens,
+        //we raise the error event and reject the promise.
         this._setLoading(false);
         that._error.raiseEvent(that, error);
         return Cesium.when.reject(error);
@@ -210,7 +210,7 @@ WebGLGlobeDataSource.prototype.load = function(data) {
     var heightScale = this.heightScale;
     var entities = this._entityCollection;
 
-    //It's a good idea to suspend events when making changes to a 
+    //It's a good idea to suspend events when making changes to a
     //large amount of entities.  This will cause events to be batched up
     //into the minimal amount of function calls and all take place at the
     //end of processing (when resumeEvents is called).
@@ -263,13 +263,39 @@ WebGLGlobeDataSource.prototype.load = function(data) {
             polyline.followSurface = new Cesium.ConstantProperty(false);
             polyline.positions = new Cesium.ConstantProperty([surfacePosition, heightPosition]);
 
+            /////////////////////
+            //var timeInterval = new Cesium.TimeInterval({
+            //    var start = Cesium.JulianDate.fromDate(new Date(2015, 2, 25, 16)),
+            //    var stop = Cesium.JulianDate.addSeconds(start, 360, new Cesium.JulianDate()),
+            //    isStartTimeIncluded : true,
+            //    iSStopTimeIncluded : false
+            //});
+
+            //var time = new Array();
+            //time.push(timeInterval);
+            //
+            //var avai = new Cesium.TimeIntervalCollection(time);
+
+            var start = Cesium.JulianDate.fromDate(new Date(2015, 2, 25, 16,30,30));
+            var stop = Cesium.JulianDate.addDays(start, 30, new Cesium.JulianDate());
+            ////////////////////
+
             //The polyline instance itself needs to be on an entity.
             var entity = new Cesium.Entity({
                 id : seriesName + ' index ' + i.toString(),
                 show : show,
                 polyline : polyline,
-                seriesName : seriesName //Custom property to indicate series name
+                seriesName : seriesName, //Custom property to indicate series name
+                availability:new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+                    start : start,
+                    stop : stop
+                })])
             });
+
+            //entity.availability = new TimeIntervalCollection();
+            //entity.availability.addInterval(TimeInterval.fromIso8601({
+            //    iso8601 : '2015-12-17/2015-12-17'
+            //}));
 
             //Add the entity to the collection.
             entities.add(entity);
@@ -300,12 +326,30 @@ console.log("loaded");
 //Create a Viewer instances and add the DataSource.
 var viewer = new Cesium.Viewer('cesiumContainer', {
     animation : false,
-    timeline : false
+    timeline : true
 });
 viewer.clock.shouldAnimate = false;
 viewer.dataSources.add(dataSource);
 
-//After the initial load, create buttons to let the user switch among series. 
+
+//////////
+var start = Cesium.JulianDate.fromDate(new Date(1450284180791));
+var today = new Date();
+var stop = Cesium.JulianDate.fromDate(new Date())
+//Make sure viewer is at the desired time.
+viewer.clock.startTime = start.clone();
+viewer.clock.stopTime = stop.clone();
+viewer.clock.currentTime = start.clone();
+viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
+viewer.clock.multiplier = 10;
+viewer.timeline.zoomTo(start, stop);
+//viewer.clock.shouldAnimate = true;
+
+//
+// /
+//////////
+
+//After the initial load, create buttons to let the user switch among series.
 function createSeriesSetter(seriesName) {
     return function() {
         dataSource.seriesToDisplay = seriesName;
@@ -319,5 +363,7 @@ for (var i = 0; i < dataSource.seriesNames.length; i++) {
 }
 
 Manager.addToolbarMenu(options);
-    
+
+
+
 document.getElementById('toolbar').style.width = '10%';
