@@ -3,7 +3,7 @@ var couchbase = require('couchbase');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/home/3dtimeline', function(req, res, next) {
     var cluster = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQuery = couchbase.ViewQuery;
     var query = ViewQuery.from('all_documents', 'all_documents');
@@ -58,5 +58,10 @@ router.get('/', function(req, res, next) {
         }
     });
 });
+
+router.get('/home', function(req, res, next) {
+    res.sendfile('views/home.html');
+});
+
 
 module.exports = router;

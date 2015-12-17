@@ -5,8 +5,8 @@ html
     meta(http-equiv="X-UA-Compatible", content="IE=Edge,chrome=1")
     meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no")
     title #{title}
-    script(src="javascripts/Cesium/Cesium.js")
-    script(src="javascripts/helpers.js")
+    script(src="../javascripts/Cesium/Cesium.js")
+    script(src="../javascripts/helpers.js")
     style
       |@import url(/stylesheets/styles.css);
   body
@@ -14,4 +14,4 @@ html
     div(id="toolbar")
     script(type="text/javascript").
       jsondata='!{data}';
-    script(src="javascripts/index/renderer.js")
+    script(src="../javascripts/index/renderer.js")
