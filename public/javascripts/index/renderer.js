@@ -23,7 +23,7 @@ var WebGLGlobeDataSource = function(name) {
     this._entityCollection = new Cesium.EntityCollection();
     this._seriesNames = [];
     this._seriesToDisplay = undefined;
-    this._heightScale = 10000000;
+    this._heightScale = 10000;
 };
 
 Object.defineProperties(WebGLGlobeDataSource.prototype, {
@@ -276,20 +276,21 @@ WebGLGlobeDataSource.prototype.load = function(data) {
             //
             //var avai = new Cesium.TimeIntervalCollection(time);
 
-            var start = Cesium.JulianDate.fromDate(new Date(2015, 2, 25, 16,30,30));
+            var start = Cesium.JulianDate.fromDate(new Date("Fri May 01 2015 00:00:00"));
             var stop = Cesium.JulianDate.addDays(start, 30, new Cesium.JulianDate());
             ////////////////////
 
             //The polyline instance itself needs to be on an entity.
             var entity = new Cesium.Entity({
-                id : seriesName + ' index ' + i.toString(),
+                id : seriesName + ' PPM: '+height + " ID: "+i.toString(),
                 show : show,
                 polyline : polyline,
                 seriesName : seriesName, //Custom property to indicate series name
                 availability:new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
                     start : start,
                     stop : stop
-                })])
+                })]),
+                //name:height+" PPM"
             });
 
             //entity.availability = new TimeIntervalCollection();
@@ -333,8 +334,7 @@ viewer.dataSources.add(dataSource);
 
 
 //////////
-var start = Cesium.JulianDate.fromDate(new Date(1450284180791));
-var today = new Date();
+var start = Cesium.JulianDate.fromDate(new Date("Fri May 01 2015 00:00:00"));
 var stop = Cesium.JulianDate.fromDate(new Date())
 //Make sure viewer is at the desired time.
 viewer.clock.startTime = start.clone();
