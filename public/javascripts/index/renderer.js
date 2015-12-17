@@ -242,10 +242,11 @@ WebGLGlobeDataSource.prototype.load = function(data) {
 
         //Now loop over each coordinate in the series and create
         // our entities from the data.
-        for (var i = 0; i < coordinates.length; i += 3) {
+        for (var i = 0; i < coordinates.length; i += 4) {
             var latitude = coordinates[i];
             var longitude = coordinates[i + 1];
             var height = coordinates[i + 2];
+            var time = coordinates[i+3];
 
             //Ignore lines of zero height.
             if(height === 0) {
@@ -276,8 +277,8 @@ WebGLGlobeDataSource.prototype.load = function(data) {
             //
             //var avai = new Cesium.TimeIntervalCollection(time);
 
-            var start = Cesium.JulianDate.fromDate(new Date("Fri May 01 2015 00:00:00"));
-            var stop = Cesium.JulianDate.addDays(start, 30, new Cesium.JulianDate());
+            var start = Cesium.JulianDate.fromDate(new Date(time));
+            var stop = Cesium.JulianDate.addSeconds(start, 60, new Cesium.JulianDate());
             ////////////////////
 
             //The polyline instance itself needs to be on an entity.
@@ -334,8 +335,8 @@ viewer.dataSources.add(dataSource);
 
 
 //////////
-var start = Cesium.JulianDate.fromDate(new Date("Fri May 01 2015 00:00:00"));
-var stop = Cesium.JulianDate.fromDate(new Date())
+var start = Cesium.JulianDate.fromDate(new Date("Thu Dec 17 2015 00:00:00"));
+var stop = Cesium.JulianDate.addDays(start, 1, new Cesium.JulianDate());
 //Make sure viewer is at the desired time.
 viewer.clock.startTime = start.clone();
 viewer.clock.stopTime = stop.clone();

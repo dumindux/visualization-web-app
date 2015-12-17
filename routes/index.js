@@ -47,8 +47,10 @@ router.get('/home/3dtimeline', function(req, res, next) {
                         jsonObject[gasesMap[gases[j]]][1].push(singleValue.lat);
                         jsonObject[gasesMap[gases[j]]][1].push(singleValue.lon);
                         jsonObject[gasesMap[gases[j]]][1].push(parseInt(singleValue[gases[j]]));
+                        jsonObject[gasesMap[gases[j]]][1].push(singleValue.Time);
 
                     }
+
                 }
 
                 jsonObject = JSON.stringify(jsonObject);
