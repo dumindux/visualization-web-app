@@ -209,20 +209,9 @@ WebGLGlobeDataSource.prototype.load = function(data) {
     var heightScale = this.heightScale;
     var entities = this._entityCollection;
 
-    //It's a good idea to suspend events when making changes to a
-    //large amount of entities.  This will cause events to be batched up
-    //into the minimal amount of function calls and all take place at the
-    //end of processing (when resumeEvents is called).
+
     entities.suspendEvents();
     entities.removeAll();
-
-    //WebGL Globe JSON is an array of series, where each series itself is an
-    //array of two items, the first containing the series name and the second
-    //being an array of repeating latitude, longitude, height values.
-    //
-    //Here's a more visual example.
-    //[["series1",[latitude, longitude, height, ... ]
-    // ["series2",[latitude, longitude, height, ... ]]
 
     // Loop over each series
     for (var x = 0; x < data.length; x++) {
@@ -265,7 +254,7 @@ WebGLGlobeDataSource.prototype.load = function(data) {
                 seriesName : seriesName, //Custom property to indicate series name
                 point : {
                     pixelSize : 10,
-                    color : Cesium.Color.GREEN
+                    color : Cesium.Color.YELLOW
                 },
                 //availability:new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
                 //    start : start,
@@ -303,11 +292,21 @@ console.log("loaded");
 //Create a Viewer instances and add the DataSource.
 var viewer = new Cesium.Viewer('cesiumContainer', {
     animation : false,
-    timeline : true
+    timeline : true,
+    sceneMode : Cesium.SceneMode.SCENE2D,
+    //imageryProvider:new BingMapsImageryProvider(),
+    imageryProvider:  new Cesium.ArcGisMapServerImageryProvider({
+        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer',
+        //mapStyle : Cesium.BingMapsStyle.ROAD
+    }),
+
+    baseLayerPicker:false
 });
 viewer.clock.shouldAnimate = false;
 viewer.dataSources.add(dataSource);
+//viewer.selectedImageryProviderViewModel =new Cesium.ProviderViewModel(options);
 
+//viewer.imageryLayers.pickImageryLayerFeatures();
 
 
 var start = Cesium.JulianDate.fromDate(new Date("Thu Dec 17 2015 00:00:00"));
