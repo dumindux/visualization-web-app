@@ -116,7 +116,7 @@ router.get('/home/2ddotmap', function(req, res, next) {
                 }
 
                 jsonObject = JSON.stringify(jsonObject);
-                res.render('2ddots', { title: '2D Dots',
+                res.render('2ddots', { title: '2D Dot Map',
                     data: jsonObject});
             });
         }
