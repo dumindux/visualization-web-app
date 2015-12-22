@@ -336,7 +336,7 @@ viewer.dataSources.add(dataSource);
 
 //////////
 var start = Cesium.JulianDate.fromDate(new Date("Thu Dec 17 2015 00:00:00"));
-var stop = Cesium.JulianDate.addDays(start, 1, new Cesium.JulianDate());
+var stop = Cesium.JulianDate.fromDate( new Cesium.JulianDate());
 //Make sure viewer is at the desired time.
 viewer.clock.startTime = start.clone();
 viewer.clock.stopTime = stop.clone();

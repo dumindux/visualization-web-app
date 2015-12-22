@@ -246,6 +246,24 @@ WebGLGlobeDataSource.prototype.load = function(data) {
             var start = Cesium.JulianDate.fromDate(new Date(time));
             var stop = Cesium.JulianDate.addSeconds(start, 60, new Cesium.JulianDate());
 
+            if(seriesName=="CO"){
+                if(height<35){
+                    color=Cesium.Color.GREEN
+                }else if(height<100){
+                    color=Cesium.Color.YELLOW
+                }else {
+                    color=Cesium.Color.RED
+                }
+            }else if(seriesName=="SO2"){
+                if(height<5){
+                    color=Cesium.Color.GREEN
+                }else if(height<50){
+                    color=Cesium.Color.YELLOW
+                }else {
+                    color=Cesium.Color.RED
+                }
+            }
+
             //The polyline instance itself needs to be on an entity.
             var entity = new Cesium.Entity({
                 id : seriesName + ' PPM: '+height + " ID: "+i.toString(),
@@ -254,7 +272,7 @@ WebGLGlobeDataSource.prototype.load = function(data) {
                 seriesName : seriesName, //Custom property to indicate series name
                 point : {
                     pixelSize : 10,
-                    color : Cesium.Color.YELLOW
+                    color : color
                 },
                 //availability:new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
                 //    start : start,
@@ -291,7 +309,7 @@ console.log("loaded");
 
 //Create a Viewer instances and add the DataSource.
 var viewer = new Cesium.Viewer('cesiumContainer', {
-    animation : false,
+    animation : true,
     timeline : true,
     sceneMode : Cesium.SceneMode.SCENE2D,
     //imageryProvider:new BingMapsImageryProvider(),
@@ -310,7 +328,7 @@ viewer.dataSources.add(dataSource);
 
 
 var start = Cesium.JulianDate.fromDate(new Date("Thu Dec 17 2015 00:00:00"));
-var stop = Cesium.JulianDate.addDays(start, 1, new Cesium.JulianDate());
+var stop = Cesium.JulianDate.fromDate(new Cesium.JulianDate());
 //Make sure viewer is at the desired time.
 viewer.clock.startTime = start.clone();
 viewer.clock.stopTime = stop.clone();

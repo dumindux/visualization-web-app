@@ -65,6 +65,10 @@ router.get('/home', function(req, res, next) {
     res.sendfile('views/home.html');
 });
 
+router.get('/',function(req,res,next){
+    res.redirect('/home');
+});
+
 router.get('/home/2ddotmap', function(req, res, next) {
     var cluster = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQuery = couchbase.ViewQuery;
@@ -121,6 +125,12 @@ router.get('/home/2ddotmap', function(req, res, next) {
             });
         }
     });
+});
+
+router.get('/home/average',function(req,res,next){
+    jsonObject=[];
+    res.render('average', { title: 'City Level Pollution',
+        data: jsonObject});
 });
 
 
