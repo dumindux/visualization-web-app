@@ -128,7 +128,8 @@ router.get('/home/2ddotmap', function(req, res, next) {
 });
 
 router.get('/home/average',function(req,res,next){
-    jsonObject=[];
+    var jsonObject = [["CO", [6.9270786,79.861243,200,12500]],["SO2", [6.9270786,79.861243,100,4000]]];
+    jsonObject = JSON.stringify(jsonObject);
     res.render('average', { title: 'City Level Pollution',
         data: jsonObject});
 });

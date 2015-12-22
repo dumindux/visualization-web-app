@@ -266,8 +266,9 @@ WebGLGlobeDataSource.prototype.load = function(data) {
 
             //The polyline instance itself needs to be on an entity.
             var entity = new Cesium.Entity({
-                id : seriesName + ' PPM: '+height + " ID: "+i.toString(),
+                //id : seriesName + ' PPM: '+height + " ID: "+i.toString(),
                 show : show,
+                name: seriesName + ' PPM: '+height,
                 position :Cesium.Cartesian3.fromDegrees(longitude, latitude),
                 seriesName : seriesName, //Custom property to indicate series name
                 point : {
