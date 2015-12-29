@@ -6,11 +6,13 @@ var router = express.Router();
 router.get('/home/3dtimeline', function(req, res, next) {
     var cluster = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQuery = couchbase.ViewQuery;
-    var query = ViewQuery.from('all_documents', 'all_documents');
+    var query = ViewQuery.from('all_documents', 'all_documents').limit(100);
 
 
 
     var bucket = cluster.openBucket('sync_gateway', function(err) {
+        var jsonObjectOld = [["1990", [35, 27, 0.001, -17, 146, 0.004, -31, -54, 0.003, 3, 10, 0.020, 39, 103, 0.002]], ["2000", [, 18, 122, 0.015, -14, -45, 0.001, -3, 14, 0.001, -7, -49, 0.003, 30, 87, 0.000, -27, 28, 0.122, 42, 143, 0.006, 60, 22, 0.002, 32, 108, 0.051, -17, -40, 0.005, 31, -113, 0.001, 28, 39, 0.001, -30, -67, 0.002]]]
+
         if (err) {
             // Failed to make a connection to the Couchbase cluster.
             var jsonObject = [ ["1990",[35,27,0.001,-17,146,0.004,-31,-54,0.003,3,10,0.020,39,103,0.002]],["2000",[,18,122,0.015,-14,-45,0.001,-3,14,0.001,-7,-49,0.003,30,87,0.000,-27,28,0.122,42,143,0.006,60,22,0.002,32,108,0.051,-17,-40,0.005,31,-113,0.001,28,39,0.001,-30,-67,0.002]]]
@@ -72,7 +74,7 @@ router.get('/',function(req,res,next){
 router.get('/home/2ddotmap', function(req, res, next) {
     var cluster = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQuery = couchbase.ViewQuery;
-    var query = ViewQuery.from('all_documents', 'all_documents');
+    var query = ViewQuery.from('all_documents', 'all_documents').limit(100);
 
 
 

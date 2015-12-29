@@ -287,10 +287,10 @@ WebGLGlobeDataSource.prototype.load = function(data) {
                 show : show,
                 polyline : polyline,
                 seriesName : seriesName, //Custom property to indicate series name
-                availability:new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
-                    start : start,
-                    stop : stop
-                })]),
+                //availability:new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+                //    start : start,
+                //    stop : stop
+                //})]),
                 //name:height+" PPM"
             });
 
