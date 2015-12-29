@@ -268,7 +268,7 @@ WebGLGlobeDataSource.prototype.load = function(data) {
             var entity = new Cesium.Entity({
                 //id : seriesName + ' PPM: '+height + " ID: "+i.toString(),
                 show : show,
-                name: seriesName + ' PPM: '+height,
+                name: seriesName + ": " + height + ' PPM ',
                 position :Cesium.Cartesian3.fromDegrees(longitude, latitude),
                 seriesName : seriesName, //Custom property to indicate series name
                 point : {
@@ -323,21 +323,25 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 });
 viewer.clock.shouldAnimate = false;
 viewer.dataSources.add(dataSource);
-//viewer.selectedImageryProviderViewModel =new Cesium.ProviderViewModel(options);
 
-//viewer.imageryLayers.pickImageryLayerFeatures();
+var options = [{text: 'Gas Type'}];
+for (var i = 0; i < dataSource.seriesNames.length; i++) {
+    var seriesName = dataSource.seriesNames[i];
+    options.push({text: seriesName, onselect: createSeriesSetter(seriesName)});
+}
 
+Manager.addToolbarMenu(options);
 
 var start = Cesium.JulianDate.fromDate(new Date("Thu Dec 17 2015 00:00:00"));
-var stop = Cesium.JulianDate.fromDate(new Cesium.JulianDate());
-//Make sure viewer is at the desired time.
+var stop = Cesium.JulianDate.fromDate(new Date());
+////Make sure viewer is at the desired time.
 viewer.clock.startTime = start.clone();
 viewer.clock.stopTime = stop.clone();
 viewer.clock.currentTime = start.clone();
 viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
 viewer.clock.multiplier = 10;
 viewer.timeline.zoomTo(start, stop);
-//viewer.clock.shouldAnimate = true;
+viewer.clock.shouldAnimate = true;
 
 
 //After the initial load, create buttons to let the user switch among series.
@@ -347,13 +351,13 @@ function createSeriesSetter(seriesName) {
     };
 }
 
-var options = [{text : 'Gas Type'}];
-for (var i = 0; i < dataSource.seriesNames.length; i++) {
-    var seriesName = dataSource.seriesNames[i];
-    options.push({text: seriesName, onselect: createSeriesSetter(seriesName)});
-}
-
-Manager.addToolbarMenu(options);
+//var options = [{text : 'Gas Type'}];
+//for (var i = 0; i < dataSource.seriesNames.length; i++) {
+//    var seriesName = dataSource.seriesNames[i];
+//    options.push({text: seriesName, onselect: createSeriesSetter(seriesName)});
+//}
+//
+//Manager.addToolbarMenu(options);
 
 
 
