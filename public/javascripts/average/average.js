@@ -13,7 +13,7 @@ var WebGLGlobeDataSource = function(name) {
     this._entityCollection = new Cesium.EntityCollection();
     this._seriesNames = [];
     this._seriesToDisplay = undefined;
-    this._heightScale = 10
+    this._heightScale = 100
 };
 
 Object.defineProperties(WebGLGlobeDataSource.prototype, {
@@ -222,10 +222,11 @@ WebGLGlobeDataSource.prototype.load = function(data) {
         //Now loop over each coordinate in the series and create
         // our entities from the data.
         for (var i = 0; i < coordinates.length; i += 4) {
-            var latitude = coordinates[i];
-            var longitude = coordinates[i + 1];
-            var height = coordinates[i + 2];
-            var radious = coordinates[i+3];
+            var city = coordinates[i];
+            var latitude = coordinates[i + 1];
+            var longitude = coordinates[i + 2];
+            var height = coordinates[i + 3];
+            var radious = coordinates[i + 4];
 
             //Ignore lines of zero height.
             if(height === 0) {
@@ -256,7 +257,7 @@ WebGLGlobeDataSource.prototype.load = function(data) {
 
             //The polyline instance itself needs to be on an entity.
             var entity = new Cesium.Entity({
-                name : seriesName + ' PPM: '+height,
+                name: city + " " + seriesName + " average: " + height + ' PPM',
                 show : show,
                 position :Cesium.Cartesian3.fromDegrees(longitude, latitude),
                 seriesName : seriesName, //Custom property to indicate series name
