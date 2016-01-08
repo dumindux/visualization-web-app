@@ -13,7 +13,7 @@ var WebGLGlobeDataSource = function(name) {
     this._entityCollection = new Cesium.EntityCollection();
     this._seriesNames = [];
     this._seriesToDisplay = undefined;
-    this._heightScale = 100
+    this._heightScale = 70
 };
 
 Object.defineProperties(WebGLGlobeDataSource.prototype, {
@@ -221,7 +221,7 @@ WebGLGlobeDataSource.prototype.load = function(data) {
 
         //Now loop over each coordinate in the series and create
         // our entities from the data.
-        for (var i = 0; i < coordinates.length; i += 4) {
+        for (var i = 0; i < coordinates.length; i += 5) {
             var city = coordinates[i];
             var latitude = coordinates[i + 1];
             var longitude = coordinates[i + 2];
@@ -262,8 +262,8 @@ WebGLGlobeDataSource.prototype.load = function(data) {
                 position :Cesium.Cartesian3.fromDegrees(longitude, latitude),
                 seriesName : seriesName, //Custom property to indicate series name
                 ellipse : {
-                    semiMinorAxis : radious,
-                    semiMajorAxis : radious,
+                    semiMinorAxis: radious * 1000,
+                    semiMajorAxis: radious * 1000,
                     extrudedHeight : height*heightScale,
                     //rotation : Cesium.Math.toRadians(45),
                     material : color,
