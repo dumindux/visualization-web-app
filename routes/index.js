@@ -3,7 +3,7 @@ var couchbase = require('couchbase');
 var router = express.Router();
 
 /* GET home page. */
-router.get('/home/3dtimeline', function(req, res, next) {
+router.get('/3dtimeline', function (req, res, next) {
     var cluster = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQuery = couchbase.ViewQuery;
     var query = ViewQuery.from('all_documents', 'all_documents').limit(100);
@@ -68,10 +68,11 @@ router.get('/home', function(req, res, next) {
 });
 
 router.get('/',function(req,res,next){
-    res.redirect('/home');
+    //res.redirect('/home');
+    res.sendfile('views/home.html');
 });
 
-router.get('/home/2ddotmap', function(req, res, next) {
+router.get('/2ddotmap', function (req, res, next) {
     var cluster = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQuery = couchbase.ViewQuery;
     var query = ViewQuery.from('all_documents', 'all_documents').limit(100);//.order(ViewQuery.Order.DESCENDING);
@@ -127,7 +128,7 @@ router.get('/home/2ddotmap', function(req, res, next) {
     });
 });
 
-router.get('/home/average',function(req,res,next){
+router.get('/average', function (req, res, next) {
     var jsonObject;
 
     var final = [["CO", []], ["SO2", []], ["NO2", []]];
@@ -231,7 +232,7 @@ router.get('/home/average',function(req,res,next){
 });
 
 /* GET heatmap page. */
-router.get('/home/heatmap', function(req, res, next) {
+router.get('/heatmap', function (req, res, next) {
     var cluster = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQuery = couchbase.ViewQuery;
     var query = ViewQuery.from('all_documents', 'all_documents').limit(100);
