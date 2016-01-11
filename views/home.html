@@ -18,10 +18,15 @@
     <link rel="stylesheet" type="text/css"  href="/stylesheets/home/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/fonts/font-awesome/css/font-awesome.css">
 
+    <!--slide show-->
+    <link rel="stylesheet" href="/stylesheets/home/slideshow/simple-slideshow-styles.css">
     <!-- Slider
         ================================================== -->
     <link href="/stylesheets/home/owl.carousel.css" rel="stylesheet" media="screen">
     <link href="/stylesheets/home/owl.theme.css" rel="stylesheet" media="screen">
+
+    <!--Slideshow-->
+
 
     <!-- Stylesheet
         ================================================== -->
@@ -88,7 +93,30 @@
             <p></p>
         </div>
         <div class="section-title wow fadeInDown" data-wow-delay="200ms">
-            <img src="/images/gif/animation.gif" style="display: inline-block;height: auto;max-width: 100%;">
+            <div class="bss-slides num1" tabindex="1" autofocus="autofocus">
+                <figure>
+                    <img src="/images/slideshow/1.jpg" width="100%"/>
+                    <!--<figcaption>Caption goes here</figcaption>-->
+                </figure>
+
+                <figure>
+                    <img src="/images/slideshow/2.jpg" width="100%"/>
+                    <!--<figcaption>Caption goes here</figcaption>-->
+                </figure>
+
+                <figure>
+                    <img src="/images/slideshow/3.jpg" width="100%"/>
+                    <!--<figcaption>Caption goes here</figcaption>-->
+                </figure>
+                <figure>
+                    <img src="/images/slideshow/4.jpg" width="100%"/>
+                    <!--<figcaption>Caption goes here</figcaption>-->
+                </figure>
+                <figure>
+                    <img src="/images/slideshow/5.jpg" width="100%"/>
+                    <!--<figcaption>Caption goes here</figcaption>-->
+                </figure>
+            </div>
         </div>
     </div>
 </div>
@@ -652,6 +680,26 @@
 <script type="text/javascript" src="/javascripts/home/jqBootstrapValidation.js"></script>
 <script type="text/javascript" src="/javascripts/home/contact_me.js"></script>
 <script type="text/javascript" src="/javascripts/home/owl.carousel.js"></script>
+<script type="text/javascript" src="/javascripts/home/slideshow/hammer.min.js.js"></script>
+<script type="text/javascript" src="/javascripts/home/slideshow/better-simple-slideshow.min.js"></script>
+
+<script>
+    var opts = {
+        auto: {
+            speed: 3500,
+            pauseOnHover: true
+        },
+        fullScreen: false,
+        swipe: true
+    };
+    makeBSS('.num1', opts);
+    var opts2 = {
+        auto: false,
+        fullScreen: true,
+        swipe: true
+    };
+    makeBSS('.num2', opts2);
+</script>
 
 <!-- Javascripts
     ================================================== -->
