@@ -320,89 +320,98 @@ router.get('/heatmap', function (req, res, next) {
     });
 });
 
+/*Example REST API http://localhost:3001/api?lat=6.800867&lon=79.900978 */
 router.get('/api', function (req, res, next) {
-    var lat = req.param('lat');
-    var lon = req.param('lon');
+    var lat = req.query.lat;
+    var lon = req.query.lon;
     var latlon = lat + "," + lon;
+
+    console.log(latlon);
     var city = "";
 
-    request("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latlon + "&sensor=true", function (error, response, body) {
-        var json = JSON.parse(body);
-        var results = json["results"];
-        var firstElement = results[0];
-        var addressComponents = firstElement.address_components;
-        console.log(addressComponents);
-        var cityFound = false;
-        var givenCity = "";
+    if (lat != undefined && lon != undefined) {
+        request("http://maps.googleapis.com/maps/api/geocode/json?latlng=" + latlon + "&sensor=true", function (error, response, body) {
+            var json = JSON.parse(body);
+            var results = json["results"];
+            var firstElement = results[0];
+            var addressComponents = firstElement.address_components;
+            //console.log(addressComponents);
+            var cityFound = false;
+            var givenCity = "";
 
-        addressComponents.forEach(function (data) {
+            addressComponents.forEach(function (data) {
 
-            var type = data.types;
-            if (type[0] == "locality") {
-                givenCity = data.short_name;
-                cityFound = true;
-                console.log(data.short_name);
+                var type = data.types;
+                if (type[0] == "locality") {
+                    givenCity = data.short_name;
+                    cityFound = true;
+                    console.log(data.short_name);
 
-                var cluster = new couchbase.Cluster('192.248.8.247:8091');
-                var ViewQuery = couchbase.ViewQuery;
-                var query = ViewQuery.from('average', 'all_average').limit(100);//.order(ViewQuery.Order.DESCENDING);
-                var bucket = cluster.openBucket('air_pollution', function (err) {
-
-
-                    if (err) {
-                        console.log("error opening bucket city average" + err);
+                    var cluster = new couchbase.Cluster('192.248.8.247:8091');
+                    var ViewQuery = couchbase.ViewQuery;
+                    var query = ViewQuery.from('average', 'all_average').limit(100);//.order(ViewQuery.Order.DESCENDING);
+                    var bucket = cluster.openBucket('air_pollution', function (err) {
 
 
-                    } else {
-                        bucket.query(query, function (err, results) {
-                            if (err) {
-                                throw err;
-                            }
-                            var found = false;
-                            for (var i = 0; i < results.length; i++) {
-                                var cityGasData = results[i].value;
-                                var city = cityGasData.city;
+                        if (err) {
+                            console.log("error opening bucket city average" + err);
 
-                                if (givenCity == city) {
-                                    found = true;
-                                    var foudDataResponse = {};
-                                    foudDataResponse.city = city;
-                                    foudDataResponse.found = true;
-                                    foudDataResponse.message = "Data found for given city";
-                                    foudDataResponse.COAvg = parseFloat(cityGasData.COAvg);
-                                    foudDataResponse.SO2Avg = parseFloat(cityGasData.SO2Avg);
-                                    foudDataResponse.NO2Avg = parseFloat(cityGasData.NO2Avg);
 
-                                    res.send(foudDataResponse);
+                        } else {
+                            bucket.query(query, function (err, results) {
+                                if (err) {
+                                    throw err;
                                 }
-                            }
+                                var found = false;
+                                for (var i = 0; i < results.length; i++) {
+                                    var cityGasData = results[i].value;
+                                    var city = cityGasData.city;
 
-                            if (!found) {
-                                var notFoundGasDataResponse = {};
-                                notFoundGasDataResponse.city = givenCity;
-                                notFoundGasDataResponse.found = false;
-                                notFoundGasDataResponse.message = "Data for given city is not found"
-                                res.send(notFoundGasDataResponse);
-                            }
-                            console.log(JSON.stringify(results));
-                        })
-                    }
-                });
+                                    if (givenCity == city) {
+                                        found = true;
+                                        var foudDataResponse = {};
+                                        foudDataResponse.city = city;
+                                        foudDataResponse.found = true;
+                                        foudDataResponse.message = "Data found for given city";
+                                        foudDataResponse.COAvg = parseFloat(cityGasData.COAvg);
+                                        foudDataResponse.SO2Avg = parseFloat(cityGasData.SO2Avg);
+                                        foudDataResponse.NO2Avg = parseFloat(cityGasData.NO2Avg);
 
+                                        res.send(foudDataResponse);
+                                    }
+                                }
+
+                                if (!found) {
+                                    var notFoundGasDataResponse = {};
+                                    notFoundGasDataResponse.city = givenCity;
+                                    notFoundGasDataResponse.found = false;
+                                    notFoundGasDataResponse.message = "Data for given city is not found"
+                                    res.send(notFoundGasDataResponse);
+                                }
+                                //console.log(JSON.stringify(results));
+                            })
+                        }
+                    });
+
+                }
+            });
+
+            if (!cityFound) {
+                var cityNotFoundRespose = {};
+                cityNotFoundRespose.city = givenCity;
+                cityNotFoundRespose.found = false;
+                cityNotFoundRespose.message = "Unable to find city"
+                res.send(cityNotFoundRespose);
             }
+
+            //console.log(json.getAttribute("address_components"));
+
         });
+    } else {
+        res.send("API Help: Send GET to /api?lat=xxx&lon=yyy where xxx = latitude and yyy = longitude. Return average gas values" +
+            "of nearest city for given coordinates");
+    }
 
-        if (!cityFound) {
-            var cityNotFoundRespose = {};
-            cityNotFoundRespose.city = givenCity;
-            cityNotFoundRespose.found = false;
-            cityNotFoundRespose.message = "Unable to find city"
-            res.send(cityNotFoundRespose);
-        }
-
-        //console.log(json.getAttribute("address_components"));
-
-    });
 
 
 
