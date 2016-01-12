@@ -170,7 +170,7 @@ router.get('/average', function (req, res, next) {
                 console.log("After");
                 var cluster = new couchbase.Cluster('192.248.8.247:8091');
                 var ViewQuery = couchbase.ViewQuery;
-                var query = ViewQuery.from('average', 'all_average').limit(100);//.order(ViewQuery.Order.DESCENDING);
+                var query = ViewQuery.from('cleaned_data_average', 'cleaned_data_average').limit(100);//.order(ViewQuery.Order.DESCENDING);
                 var bucket = cluster.openBucket('air_pollution', function (err) {
 
 
