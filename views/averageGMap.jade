@@ -1,0 +1,20 @@
+doctype html
+html
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="initial-scale=1.0")
+    style
+      |html, body {
+      |  height: 100%;
+      |  margin: 0;
+      |  padding: 0;
+      |}
+      |#map {
+      |  height: 100%;
+      |}
+    script(src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization")
+  body(id="map-container")
+    div(id="map")
+    script(type="text/javascript").
+      jsondata='!{data}';
+    script(src="../javascripts/averageGMap/renderer.js")

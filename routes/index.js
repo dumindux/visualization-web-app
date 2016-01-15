@@ -411,8 +411,106 @@ router.get('/api', function (req, res, next) {
         res.send("API Help: Send GET to /api?lat=xxx&lon=yyy where xxx = latitude and yyy = longitude. Return average gas values" +
             "of nearest city for given coordinates");
     }
-
-
 });
 
+router.get('/averageGMap', function (req, res, next) {
+    var jsonObject;
+
+    var final = [["CO", []], ["SO2", []], ["NO2", []]];
+    var cityValues = {}
+
+    var clusterCity = new couchbase.Cluster('192.248.8.247:8091');
+    var ViewQueryCity = couchbase.ViewQuery;
+
+    var queryCity = ViewQueryCity.from('cityData', 'cityData').limit(100);//.order(ViewQuery.Order.DESCENDING);
+    var bucketAll = clusterCity.openBucket('air_pollution', function (err) {
+        if (err) {
+
+            console.log("error opening bucket city data" + err)
+
+        } else {
+            bucketAll.query(queryCity, function (err, results) {
+                if (err) {
+                    throw err;
+                }
+                console.log(JSON.stringify(results));
+                for (var i = 0; i < results.length; i++) {
+                    var cityData = results[i].value;
+                    var city = cityData.city;
+                    var max = parseFloat(cityData.max);
+                    var lan = cityData.CityLan;
+                    var lot = cityData.CityLon;
+                    cityValues[city] = {"max": max, "lan": lan, "lot": lot};
+                }
+                console.log(cityValues);
+
+                console.log("After");
+                var cluster = new couchbase.Cluster('192.248.8.247:8091');
+                var ViewQuery = couchbase.ViewQuery;
+                var query = ViewQuery.from('cleaned_data_average', 'cleaned_data_average').limit(100);//.order(ViewQuery.Order.DESCENDING);
+                var bucket = cluster.openBucket('air_pollution', function (err) {
+
+
+                    if (err) {
+                        // Failed to make a connection to the Couchbase cluster.
+                        var jsonObject = [["CO", ["Colombo", 6.9270786, 79.861243, 34, 12500]], ["SO2", ["Colombo", 6.9270786, 79.861243, 100, 4000]]];
+                        jsonObject = JSON.stringify(jsonObject);
+                        console.log("error opening bucket city average" + err);
+
+
+                    } else {
+                        bucket.query(query, function (err, results) {
+                            if (err) {
+                                throw err;
+                            }
+
+                            console.log(JSON.stringify(results));
+                            for (var i = 0; i < results.length; i++) {
+                                var cityGasData = results[i].value;
+                                var city = cityGasData.city;
+                                var CO = parseFloat(cityGasData.COAvg);
+                                var SO2 = parseFloat(cityGasData.SO2Avg);
+                                var NO2 = parseFloat(cityGasData.NO2Avg);
+
+                                var cityDataValues = cityValues[city];
+
+                                var max = cityDataValues.max;
+                                var lan = cityDataValues.lan;
+                                var lot = cityDataValues.lot;
+
+                                final[0][1].push(city);
+                                final[0][1].push(lan);
+                                final[0][1].push(lot);
+                                final[0][1].push(CO);
+                                final[0][1].push(max);
+
+                                final[1][1].push(city);
+                                final[1][1].push(lan);
+                                final[1][1].push(lot);
+                                final[1][1].push(SO2);
+                                final[1][1].push(max);
+
+                                final[2][1].push(city);
+                                final[2][1].push(lan);
+                                final[2][1].push(lot);
+                                final[2][1].push(NO2);
+                                final[2][1].push(max);
+
+
+                            }
+                            console.log(JSON.stringify(final));
+                            res.render('averageGMap', {
+                                title: 'City Level Pollution',
+                                data: JSON.stringify(final)
+                            });
+
+                        });
+                    }
+
+                });
+            });
+        }
+
+    });
+});
 module.exports = router;
