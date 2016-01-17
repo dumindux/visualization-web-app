@@ -12,9 +12,21 @@ html
       |#map {
       |  height: 100%;
       |}
+      |#combo {
+      |  top: 10px;
+      |  position: absolute;
+      |  margin-top: 70px;
+      |  margin-left: 10px;
+      |  width: 94px;
+      |}
+      |.box {
+      |  width: inherit;
+      |}
     script(src="https://maps.googleapis.com/maps/api/js?v=3.exp&libraries=visualization")
   body(id="map-container")
     div(id="map")
+    div(id="combo")
+      select(id="combobox", class="box", onchange="changeMarkers.call(this, event)")
     script(type="text/javascript").
       jsondata='!{data}';
     script(src="../javascripts/averageGMap/renderer.js")
