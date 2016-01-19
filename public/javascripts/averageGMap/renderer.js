@@ -34,6 +34,7 @@ function addMarkers(index) {
   var minMag = 1.0;
   var maxMag = 1000;
 
+  var infowindow = new google.maps.InfoWindow();
   for (var i = 0; i < jsondata[0][1].length; i++) {
     var fraction = (Math.min(jsondata[index][1][3], maxMag) - minMag) /
         (maxMag - minMag);
@@ -57,6 +58,7 @@ function addMarkers(index) {
       animation: google.maps.Animation.DROP,
       map: map
     });
+    makeInfoWindowEvent(map, infowindow, jsondata[index][1][3] + " ppm", point);
     points.push(point);
   }
 }
@@ -78,6 +80,13 @@ function interpolateHsl(lowHsl, highHsl, fraction) {
   }
 
   return 'hsl(' + color[0] + ',' + color[1] + '%,' + color[2] + '%)';
+}
+
+function makeInfoWindowEvent(map, infowindow, contentString, marker) {
+  google.maps.event.addListener(marker, 'click', function() {
+    infowindow.setContent(contentString);
+    infowindow.open(map, marker);
+  });
 }
 
 var mapStyle = [{
