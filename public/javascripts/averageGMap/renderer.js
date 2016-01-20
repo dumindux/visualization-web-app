@@ -30,7 +30,7 @@ function changeMarkers(event) {
 function addMarkers(index) {
   removeMarkers();
   var low = [151, 83, 34];   // color of mag 1.0
-  var high = [5, 69, 54];  // color of mag 6.0 and above
+  var high = [5, 69, 54];  // color of mag 1000.0 and above
   var minMag = 1.0;
   var maxMag = 1000;
 
