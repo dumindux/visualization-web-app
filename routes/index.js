@@ -379,6 +379,7 @@ router.get('/api', function (req, res, next) {
                                           foudDataResponse.NO2Avg = parseFloat(cityGasData.NO2Avg);
 
                                           res.send(foudDataResponse);
+                                          return;
                                       }
                                   }
 
@@ -388,6 +389,7 @@ router.get('/api', function (req, res, next) {
                                       notFoundGasDataResponse.found = false;
                                       notFoundGasDataResponse.message = "Data for given city is not found"
                                       res.send(notFoundGasDataResponse);
+                                      return;
                                   }
                                   //console.log(JSON.stringify(results));
                               })
@@ -402,6 +404,7 @@ router.get('/api', function (req, res, next) {
               notFoundGasDataResponse.found = false;
               notFoundGasDataResponse.message = "Data for given city is not found"
               res.send(notFoundGasDataResponse);
+              return;
             }
             if (!cityFound) {
                 var cityNotFoundRespose = {};
@@ -409,6 +412,7 @@ router.get('/api', function (req, res, next) {
                 cityNotFoundRespose.found = false;
                 cityNotFoundRespose.message = "Unable to find city"
                 res.send(cityNotFoundRespose);
+                return;
             }
 
             //console.log(json.getAttribute("address_components"));
