@@ -23,8 +23,17 @@ function initMap() {
   addMarkers(0);
 }
 
-function changeMarkers(event) {
+function refresh(event) {
+  updateLegend(constants[this.options[this.selectedIndex].innerHTML]);
   addMarkers(this.selectedIndex);
+}
+
+function updateLegend(values) {
+  //console.log($("#text1").textContent);
+  $("#text1").text(values[0] + " ppm");
+  $("#text2").text(values[1] + " ppm");
+  $("#text3").text(values[2] + " ppm");
+  $("#text4").text(values[3] + " ppm");
 }
 
 function addMarkers(index) {
