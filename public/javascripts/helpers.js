@@ -36,8 +36,9 @@
             window.Manager.addToolbarMenu(options, toolbarID);
             defaultAction = options[0].onselect;
         },
-        addToolbarMenu : function(options, toolbarID) {
+        addToolbarMenu : function(options, elementID, toolbarID) {
             var menu = document.createElement('select');
+            menu.setAttribute("id", elementID);
             menu.className = 'cesium-button';
             menu.onchange = function() {
                 window.Manager.reset();

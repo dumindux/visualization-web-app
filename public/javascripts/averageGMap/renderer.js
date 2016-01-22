@@ -117,3 +117,5 @@ var mapStyle = [{
 }];
 
 initMap();
+selectedText = $("#combobox option:selected").html();
+updateLegend(constants[selectedText])

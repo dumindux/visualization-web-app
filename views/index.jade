@@ -7,6 +7,8 @@ html
     title #{title}
     script(src="../javascripts/Cesium/Cesium.js")
     script(src="../javascripts/helpers.js")
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js")
+    script(src="../javascripts/config/constants.js")
     style
       |@import url(/stylesheets/styles.css);
       |#floating-panel {
@@ -27,13 +29,13 @@ html
     div(id="floating-panel")
       svg(height="130", width="100")
         path(fill="#65C68A", d="M 0 131 L 100 131 100 98 0 98")
-        text(x="5" y="128" fill="black") 0 ppm
+        text(id="text1", x="5" y="128" fill="black") 0 ppm
         path(fill="#FEE665", d="M 0 98 L 100 98 100 66 0 66")
-        text(x="5" y="95" fill="black") 25 ppm
+        text(id="text2",x="5" y="95" fill="black") 25 ppm
         path(fill="#FEB065", d="M 0 66 L 100 66 100 33 0 33")
-        text(x="5" y="63" fill="black") 50 ppm
+        text(id="text3",x="5" y="63" fill="black") 50 ppm
         path(fill="#FE6465", d="M 0 33 L 100 33 100 0 0 0")
-        text(x="5" y="30" fill="black") 75 ppm
+        text(id="text4",x="5" y="30" fill="black") 75 ppm
     script(type="text/javascript").
       jsondata='!{data}';
     script(src="../javascripts/index/renderer.js")
