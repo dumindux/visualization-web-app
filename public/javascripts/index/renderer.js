@@ -253,7 +253,19 @@ WebGLGlobeDataSource.prototype.load = function(data) {
                 continue;
             }
 
-            var color = Cesium.Color.fromHsl((0.6 - (height * 0.5)), 1.0, 0.5);
+            var color;
+            console.log(seriesName);
+            if(height < constants[seriesName][0][1]) {
+              color = "#65C68A";
+            } else if (height < constants[seriesName][0][2]) {
+              color = "#FEE665";
+            } else if (height < constants[seriesName][0][3]) {
+              color = "#FEB065";
+            } else {
+              color = "#FE6465";
+            }
+
+            var color = Cesium.Color.fromCssColorString(color);
             var surfacePosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, 0);
             var heightPosition = Cesium.Cartesian3.fromDegrees(longitude, latitude, height * heightScale);
 

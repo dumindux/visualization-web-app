@@ -38,15 +38,9 @@ function updateLegend(values) {
 
 function addMarkers(index) {
   removeMarkers();
-  var low = [151, 83, 34];   // color of mag 1.0
-  var high = [5, 69, 54];  // color of mag 1000.0 and above
-  var minMag = 1.0;
-  var maxMag = 1000;
 
   var infowindow = new google.maps.InfoWindow();
   for (var i = 0; i < jsondata[0][1].length; i++) {
-    var fraction = (Math.min(jsondata[index][1][3], maxMag) - minMag) /
-        (maxMag - minMag);
     if(jsondata[index][1][3] < constants[jsondata[index][0]][1]) {
       color = "#65C68A";
     } else if (jsondata[index][1][3] < constants[jsondata[index][0]][2]) {
@@ -56,7 +50,6 @@ function addMarkers(index) {
     } else {
       color = "#FE6465";
     }
-    //var color = interpolateHsl(low, high, fraction);
 
     var cityCircle = new google.maps.Circle({
       strokeColor: '#fff',
@@ -88,16 +81,6 @@ function removeMarkers() {
   }
   circles = [];
   points = [];
-}
-
-function interpolateHsl(lowHsl, highHsl, fraction) {
-  var color = [];
-  for (var i = 0; i < 3; i++) {
-    // Calculate color based on the fraction.
-    color[i] = (highHsl[i] - lowHsl[i]) * fraction + lowHsl[i];
-  }
-
-  return 'hsl(' + color[0] + ',' + color[1] + '%,' + color[2] + '%)';
 }
 
 function makeInfoWindowEvent(map, infowindow, contentString, marker) {
