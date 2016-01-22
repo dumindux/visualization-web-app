@@ -47,7 +47,16 @@ function addMarkers(index) {
   for (var i = 0; i < jsondata[0][1].length; i++) {
     var fraction = (Math.min(jsondata[index][1][3], maxMag) - minMag) /
         (maxMag - minMag);
-    var color = interpolateHsl(low, high, fraction);
+    if(jsondata[index][1][3] < constants[jsondata[index][0]][1]) {
+      color = "#65C68A";
+    } else if (jsondata[index][1][3] < constants[jsondata[index][0]][2]) {
+      color = "#FEE665";
+    } else if (jsondata[index][1][3] < constants[jsondata[index][0]][3]) {
+      color = "#FEB065";
+    } else {
+      color = "#FE6465";
+    }
+    //var color = interpolateHsl(low, high, fraction);
 
     var cityCircle = new google.maps.Circle({
       strokeColor: '#fff',
@@ -117,5 +126,5 @@ var mapStyle = [{
 }];
 
 initMap();
-selectedText = $("#combobox option:selected").html();
+selectedText = $("#combobox option:selected").html(); //updates the legend after the initial load
 updateLegend(constants[selectedText])
