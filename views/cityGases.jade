@@ -1,0 +1,35 @@
+doctype html
+html
+    head
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=Edge,chrome=1")
+        meta(name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no")
+        title #{title}
+        style
+            | html, body { width:100%; height:100%; }
+            | #combo {
+            |  top: 10px;
+            |  position: absolute;
+            |  margin-top: 20px;
+            |  margin-left: 10px;
+            |  width: 100px;
+            | }
+            | .box {
+            |  width: inherit;
+            | }
+            | #canvas {
+            |     position:absolute;
+            |     width:100%;
+            |     height:100%;
+            |     margin-left: 20%
+            | }
+        script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js")
+    body
+        canvas(id="canvas" width="800" height="500")
+        div(id="combo")
+            select(id="combobox", class="box", onchange="refresh.call(this, event)")
+        script(type="text/javascript").
+            jsondata = '!{data}';
+        script(src="../javascripts/Chartjs/Chart.js")
+        script(src="../javascripts/cityGases/renderer.js")
+
