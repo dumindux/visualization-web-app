@@ -241,8 +241,6 @@ WebGLGlobeDataSource.prototype.load = function(data) {
                 continue;
             }
 
-            var color = Cesium.Color.fromHsl((0.6 - (height * 0.5)), 1.0, 0.5);
-
             var start = Cesium.JulianDate.fromDate(new Date(time));
             var stop = Cesium.JulianDate.addSeconds(start, 60, new Cesium.JulianDate());
 
@@ -324,13 +322,13 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 viewer.clock.shouldAnimate = false;
 viewer.dataSources.add(dataSource);
 
-var options = [{text: 'Gas Type'}];
+var options = [];
 for (var i = 0; i < dataSource.seriesNames.length; i++) {
     var seriesName = dataSource.seriesNames[i];
     options.push({text: seriesName, onselect: createSeriesSetter(seriesName)});
 }
 
-Manager.addToolbarMenu(options);
+Manager.addToolbarMenu(options, "combo1");
 
 var start = Cesium.JulianDate.fromDate(new Date("Thu Dec 17 2015 00:00:00"));
 var stop = Cesium.JulianDate.fromDate(new Date());
@@ -348,17 +346,17 @@ viewer.clock.shouldAnimate = true;
 function createSeriesSetter(seriesName) {
     return function() {
         dataSource.seriesToDisplay = seriesName;
+        updateLegend(constants[seriesName]);
     };
 }
 
-//var options = [{text : 'Gas Type'}];
-//for (var i = 0; i < dataSource.seriesNames.length; i++) {
-//    var seriesName = dataSource.seriesNames[i];
-//    options.push({text: seriesName, onselect: createSeriesSetter(seriesName)});
-//}
-//
-//Manager.addToolbarMenu(options);
-
-
+function updateLegend(values) {
+    $("#text1").text(values[0] + " ppm");
+    $("#text2").text(values[1] + " ppm");
+    $("#text3").text(values[2] + " ppm");
+    $("#text4").text(values[3] + " ppm");
+}
 
 document.getElementById('toolbar').style.width = '10%';
+selectedText = $("#combo1 option:selected").html(); //updates the legend after the initial load
+updateLegend(constants[selectedText])
