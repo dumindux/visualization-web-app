@@ -244,24 +244,17 @@ WebGLGlobeDataSource.prototype.load = function(data) {
             var start = Cesium.JulianDate.fromDate(new Date(time));
             var stop = Cesium.JulianDate.addSeconds(start, 60, new Cesium.JulianDate());
 
-            if(seriesName=="CO"){
-                if(height<35){
-                    color=Cesium.Color.GREEN
-                }else if(height<100){
-                    color=Cesium.Color.YELLOW
-                }else {
-                    color=Cesium.Color.RED
-                }
-            }else if(seriesName=="SO2"){
-                if(height<5){
-                    color=Cesium.Color.GREEN
-                }else if(height<50){
-                    color=Cesium.Color.YELLOW
-                }else {
-                    color=Cesium.Color.RED
-                }
+            if(height < constants[seriesName][1]) {
+                color = "#65C68A";
+            } else if (height < constants[seriesName][2]) {
+                color = "#FEE665";
+            } else if (height < constants[seriesName][3]) {
+                color = "#FEB065";
+            } else {
+                color = "#FE6465";
             }
 
+            var color = Cesium.Color.fromCssColorString(color);
             //The polyline instance itself needs to be on an entity.
             var entity = new Cesium.Entity({
                 //id : seriesName + ' PPM: '+height + " ID: "+i.toString(),

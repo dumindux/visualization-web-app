@@ -255,11 +255,11 @@ WebGLGlobeDataSource.prototype.load = function(data) {
 
             var color;
             console.log(seriesName);
-            if(height < constants[seriesName][0][1]) {
+            if(height < constants[seriesName][1]) {
               color = "#65C68A";
-            } else if (height < constants[seriesName][0][2]) {
+            } else if (height < constants[seriesName][2]) {
               color = "#FEE665";
-            } else if (height < constants[seriesName][0][3]) {
+            } else if (height < constants[seriesName][3]) {
               color = "#FEB065";
             } else {
               color = "#FE6465";
