@@ -45,9 +45,9 @@ function setDataset(city) {
         datasets: [
             {
                 label: "My First dataset",
-                fillColor: "rgba(220,220,220,0.5)",
+                fillColor: "#00FFFF",
                 strokeColor: "rgba(220,220,220,0.8)",
-                highlightFill: "rgba(220,220,220,0.75)",
+                highlightFill: "#0000FF",
                 highlightStroke: "rgba(220,220,220,1)"//,
                 // data: [65, 59, 80, 81, 56, 55, 40]
             }
