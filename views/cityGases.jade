@@ -23,11 +23,24 @@ html
             |     height:100%;
             |     margin-left: 20%
             | }
-        script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js")
+            | #yAxis{
+            |     padding-left: 171px;
+            |     padding-top: 159px;
+            | }
+            | #xAxis{
+            |     padding-left: 667px;
+            |     padding-top: 249px;
+            | }
+
+    script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js")
     body
         canvas(id="canvas" width="800" height="500")
         div(id="combo")
             select(id="combobox", class="box", onchange="refresh.call(this, event)")
+        div(id="yAxis")
+            h4 Gas level(ppm)
+        div(id="xAxis")
+            h4 Gas
         script(type="text/javascript").
             jsondata = '!{data}';
         script(src="../javascripts/Chartjs/Chart.js")
