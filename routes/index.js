@@ -7,10 +7,10 @@ var request = require('request');
 router.get('/3dtimeline', function (req, res, next) {
     var cluster = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQuery = couchbase.ViewQuery;
-    var query = ViewQuery.from('all_documents', 'all_documents').limit(100);
+    var query = ViewQuery.from('all_documents', 'all_documents').limit(400);
 
 
-    var bucket = cluster.openBucket('sync_gateway', function (err) {
+    var bucket = cluster.openBucket('air_pollution', function (err) {
         var jsonObjectOld = [["1990", [35, 27, 0.001, -17, 146, 0.004, -31, -54, 0.003, 3, 10, 0.020, 39, 103, 0.002]], ["2000", [, 18, 122, 0.015, -14, -45, 0.001, -3, 14, 0.001, -7, -49, 0.003, 30, 87, 0.000, -27, 28, 0.122, 42, 143, 0.006, 60, 22, 0.002, 32, 108, 0.051, -17, -40, 0.005, 31, -113, 0.001, 28, 39, 0.001, -30, -67, 0.002]]]
 
         if (err) {
@@ -67,6 +67,44 @@ router.get('/3dtimeline', function (req, res, next) {
     });
 });
 
+router.get('/test', function (req, res, next) {
+    var cluster = new couchbase.Cluster('192.248.8.247:8091');
+    var ViewQuery = couchbase.ViewQuery;
+    var query = ViewQuery.from('all_city', 'all_city').limit(400).group(true);
+
+
+    var bucket = cluster.openBucket('air_pollution', function (err) {
+        var jsonObjectOld = [["1990", [35, 27, 0.001, -17, 146, 0.004, -31, -54, 0.003, 3, 10, 0.020, 39, 103, 0.002]], ["2000", [, 18, 122, 0.015, -14, -45, 0.001, -3, 14, 0.001, -7, -49, 0.003, 30, 87, 0.000, -27, 28, 0.122, 42, 143, 0.006, 60, 22, 0.002, 32, 108, 0.051, -17, -40, 0.005, 31, -113, 0.001, 28, 39, 0.001, -30, -67, 0.002]]]
+
+        if (err) {
+            // Failed to make a connection to the Couchbase cluster.
+            var jsonObject = [["1990", [35, 27, 0.001, -17, 146, 0.004, -31, -54, 0.003, 3, 10, 0.020, 39, 103, 0.002]], ["2000", [, 18, 122, 0.015, -14, -45, 0.001, -3, 14, 0.001, -7, -49, 0.003, 30, 87, 0.000, -27, 28, 0.122, 42, 143, 0.006, 60, 22, 0.002, 32, 108, 0.051, -17, -40, 0.005, 31, -113, 0.001, 28, 39, 0.001, -30, -67, 0.002]]]
+
+            jsonObject = JSON.stringify(jsonObject);
+            console.log(err);
+            //res.render('users', {
+            //    title: 'Visualizations',
+            //    data: jsonObject
+            //});
+            console.log(err);
+
+        } else {
+            bucket.query(query, function (err, results) {
+                if (err) {
+                    throw err;
+                }
+
+                jsonObject = JSON.stringify(results);
+                console.log(results);
+                //res.render('index', {
+                //    title: '3D Timeline',
+                //    data: jsonObject
+                //});
+            });
+        }
+    });
+});
+
 router.get('/home', function (req, res, next) {
     res.sendfile('views/home.html');
 });
@@ -79,8 +117,8 @@ router.get('/', function (req, res, next) {
 router.get('/2ddotmap', function (req, res, next) {
     var cluster = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQuery = couchbase.ViewQuery;
-    var query = ViewQuery.from('all_documents', 'all_documents').limit(100);//.order(ViewQuery.Order.DESCENDING);
-    var bucket = cluster.openBucket('sync_gateway', function (err) {
+    var query = ViewQuery.from('all_documents', 'all_documents').limit(400);//.order(ViewQuery.Order.DESCENDING);
+    var bucket = cluster.openBucket('air_pollution', function (err) {
 
         if (err) {
             // Failed to make a connection to the Couchbase cluster.
@@ -145,7 +183,7 @@ router.get('/average', function (req, res, next) {
     var clusterCity = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQueryCity = couchbase.ViewQuery;
 
-    var queryCity = ViewQueryCity.from('cityData', 'cityData').limit(100);//.order(ViewQuery.Order.DESCENDING);
+    var queryCity = ViewQueryCity.from('cityData', 'cityData').limit(400);//.order(ViewQuery.Order.DESCENDING);
     var bucketAll = clusterCity.openBucket('air_pollution', function (err) {
         if (err) {
 
@@ -170,7 +208,7 @@ router.get('/average', function (req, res, next) {
                 console.log("After");
                 var cluster = new couchbase.Cluster('192.248.8.247:8091');
                 var ViewQuery = couchbase.ViewQuery;
-                var query = ViewQuery.from('cleaned_data_average', 'cleaned_data_average').limit(100);//.order(ViewQuery.Order.DESCENDING);
+                var query = ViewQuery.from('cleaned_data_average', 'cleaned_data_average').limit(400);//.order(ViewQuery.Order.DESCENDING);
                 var bucket = cluster.openBucket('air_pollution', function (err) {
 
 
@@ -242,10 +280,10 @@ router.get('/average', function (req, res, next) {
 router.get('/heatmap', function (req, res, next) {
     var cluster = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQuery = couchbase.ViewQuery;
-    var query = ViewQuery.from('all_documents', 'all_documents').limit(100);
+    var query = ViewQuery.from('all_documents', 'all_documents').limit(400);
 
 
-    var bucket = cluster.openBucket('sync_gateway', function (err) {
+    var bucket = cluster.openBucket('air_pollution', function (err) {
         var jsonObjectOld = [["1990", [35, 27, 0.001, -17, 146, 0.004, -31, -54, 0.003, 3, 10, 0.020, 39, 103, 0.002]], ["2000", [, 18, 122, 0.015, -14, -45, 0.001, -3, 14, 0.001, -7, -49, 0.003, 30, 87, 0.000, -27, 28, 0.122, 42, 143, 0.006, 60, 22, 0.002, 32, 108, 0.051, -17, -40, 0.005, 31, -113, 0.001, 28, 39, 0.001, -30, -67, 0.002]]]
 
         if (err) {
@@ -433,7 +471,7 @@ router.get('/averageGMap', function (req, res, next) {
     var clusterCity = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQueryCity = couchbase.ViewQuery;
 
-    var queryCity = ViewQueryCity.from('cityData', 'cityData').limit(100);//.order(ViewQuery.Order.DESCENDING);
+    var queryCity = ViewQueryCity.from('cityData', 'cityData').limit(400);//.order(ViewQuery.Order.DESCENDING);
     var bucketAll = clusterCity.openBucket('air_pollution', function (err) {
         if (err) {
 
@@ -458,7 +496,7 @@ router.get('/averageGMap', function (req, res, next) {
                 console.log("After");
                 var cluster = new couchbase.Cluster('192.248.8.247:8091');
                 var ViewQuery = couchbase.ViewQuery;
-                var query = ViewQuery.from('cleaned_data_average', 'cleaned_data_average').limit(100);//.order(ViewQuery.Order.DESCENDING);
+                var query = ViewQuery.from('cleaned_data_average', 'cleaned_data_average').limit(400);//.order(ViewQuery.Order.DESCENDING);
                 var bucket = cluster.openBucket('air_pollution', function (err) {
 
 
@@ -534,7 +572,7 @@ router.get('/cityGases', function (req, res, next) {
     var clusterCity = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQueryCity = couchbase.ViewQuery;
 
-    var queryCity = ViewQueryCity.from('cityData', 'cityData').limit(100);//.order(ViewQuery.Order.DESCENDING);
+    var queryCity = ViewQueryCity.from('cityData', 'cityData').limit(400);//.order(ViewQuery.Order.DESCENDING);
     var bucketAll = clusterCity.openBucket('air_pollution', function (err) {
         if (err) {
 
@@ -559,7 +597,7 @@ router.get('/cityGases', function (req, res, next) {
                 console.log("After");
                 var cluster = new couchbase.Cluster('192.248.8.247:8091');
                 var ViewQuery = couchbase.ViewQuery;
-                var query = ViewQuery.from('cleaned_data_average', 'cleaned_data_average').limit(100);//.order(ViewQuery.Order.DESCENDING);
+                var query = ViewQuery.from('cleaned_data_average', 'cleaned_data_average').limit(400);//.order(ViewQuery.Order.DESCENDING);
                 var bucket = cluster.openBucket('air_pollution', function (err) {
 
 
