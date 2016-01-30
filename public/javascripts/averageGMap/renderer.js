@@ -40,12 +40,12 @@ function addMarkers(index) {
   removeMarkers();
 
   var infowindow = new google.maps.InfoWindow();
-  for (var i = 0; i < jsondata[0][1].length; i++) {
-    if(jsondata[index][1][3] < constants[jsondata[index][0]][1]) {
+  for (var i = 0; i < jsondata[index][1].length; i+=5) {
+    if(jsondata[index][1][i + 3] < constants[jsondata[index][0]][1]) {
       color = "#65C68A";
-    } else if (jsondata[index][1][3] < constants[jsondata[index][0]][2]) {
+    } else if (jsondata[index][1][i + 3] < constants[jsondata[index][0]][2]) {
       color = "#FEE665";
-    } else if (jsondata[index][1][3] < constants[jsondata[index][0]][3]) {
+    } else if (jsondata[index][1][i + 3] < constants[jsondata[index][0]][3]) {
       color = "#FEB065";
     } else {
       color = "#FE6465";
@@ -55,21 +55,21 @@ function addMarkers(index) {
       strokeColor: '#fff',
       strokeWeight: 0.5,
       fillColor: color,
-      fillOpacity: 30 / jsondata[index][1][3] ,
+      fillOpacity: 30 / jsondata[index][1][i + 3] ,
       animation: google.maps.Animation.DROP,
       map: map,
-      center: new google.maps.LatLng(jsondata[index][1][1], jsondata[index][1][2]),
-      radius: jsondata[index][1][3] * 100
+      center: new google.maps.LatLng(jsondata[index][1][i + 1], jsondata[index][1][i + 2]),
+      radius: jsondata[index][1][i + 3] * 100
     });
     circles.push(cityCircle);
 
     var point = new google.maps.Marker({
-      position: new google.maps.LatLng(jsondata[index][1][1], jsondata[index][1][2]),
-      label: jsondata[index][1][0],
+      position: new google.maps.LatLng(jsondata[index][1][i + 1], jsondata[index][1][i + 2]),
+      label: jsondata[index][1][i],
       animation: google.maps.Animation.DROP,
       map: map
     });
-    makeInfoWindowEvent(map, infowindow, jsondata[index][1][3] + " ppm", point);
+    makeInfoWindowEvent(map, infowindow, jsondata[index][1][i + 3] + " ppm", point);
     points.push(point);
   }
 }
