@@ -233,11 +233,7 @@ WebGLGlobeDataSource.prototype.load = function(data) {
                 continue;
             }
 
-            var color = Cesium.Color.fromHsl((0.6 - (height * 0.5)), 1.0, 0.5);
-
-
-
-            if(seriesName=="CO"){
+            /*if(seriesName=="CO"){
                 if(height<35){
                     color=Cesium.Color.GREEN.withAlpha(0.5)
                 }else if(height<100){
@@ -253,8 +249,18 @@ WebGLGlobeDataSource.prototype.load = function(data) {
                 }else {
                     color=Cesium.Color.RED.withAlpha(0.5)
                 }
-            }
+            }*/
 
+            if(height < constants[seriesName][1]) {
+                color = "#65C68A";
+            } else if (height < constants[seriesName][2]) {
+                color = "#FEE665";
+            } else if (height < constants[seriesName][3]) {
+                color = "#FEB065";
+            } else {
+                color = "#FE6465";
+            }
+            var color = Cesium.Color.fromCssColorString(color);
             //The polyline instance itself needs to be on an entity.
             var entity = new Cesium.Entity({
                 name: city + " " + seriesName + " average: " + height + ' PPM',
@@ -341,13 +347,13 @@ function createSeriesSetter(seriesName) {
     };
 }
 
-var options = [{text : 'Gas Type'}];
+var options = [];
 for (var i = 0; i < dataSource.seriesNames.length; i++) {
     var seriesName = dataSource.seriesNames[i];
     options.push({text: seriesName, onselect: createSeriesSetter(seriesName)});
 }
 
-Manager.addToolbarMenu(options);
+Manager.addToolbarMenu(options, "combo1");
 
 
 
@@ -391,3 +397,18 @@ var blueEllipse = viewer.entities.add({
 });
 */
 viewer.zoomTo(viewer.entities);
+
+function updateLegend(values) {
+    $("#text1").text(values[0] + " ppm");
+    $("#text2").text(values[1] + " ppm");
+    $("#text3").text(values[2] + " ppm");
+    $("#text4").text(values[3] + " ppm");
+}
+
+
+
+
+
+document.getElementById('toolbar').style.width = '10%';
+selectedText = $("#combo1 option:selected").html(); //updates the legend after the initial load
+updateLegend(constants[selectedText])
