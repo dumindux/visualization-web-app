@@ -68,40 +68,106 @@ router.get('/3dtimeline', function (req, res, next) {
 });
 
 router.get('/test', function (req, res, next) {
-    var cluster = new couchbase.Cluster('192.248.8.247:8091');
-    var ViewQuery = couchbase.ViewQuery;
-    var query = ViewQuery.from('all_city', 'all_city').limit(400).group(true);
+    var jsonObject;
 
+    var final = [["CO", []], ["SO2", []], ["NO2", []]];
+    var cityValues = {}
 
-    var bucket = cluster.openBucket('air_pollution', function (err) {
-        var jsonObjectOld = [["1990", [35, 27, 0.001, -17, 146, 0.004, -31, -54, 0.003, 3, 10, 0.020, 39, 103, 0.002]], ["2000", [, 18, 122, 0.015, -14, -45, 0.001, -3, 14, 0.001, -7, -49, 0.003, 30, 87, 0.000, -27, 28, 0.122, 42, 143, 0.006, 60, 22, 0.002, 32, 108, 0.051, -17, -40, 0.005, 31, -113, 0.001, 28, 39, 0.001, -30, -67, 0.002]]]
+    var clusterCity = new couchbase.Cluster('192.248.8.247:8091');
+    var ViewQueryCity = couchbase.ViewQuery;
 
+    var queryCity = ViewQueryCity.from('all_city', 'all_city').limit(400).group(true);//.order(ViewQuery.Order.DESCENDING);
+    var bucketAll = clusterCity.openBucket('air_pollution', function (err) {
         if (err) {
-            // Failed to make a connection to the Couchbase cluster.
-            var jsonObject = [["1990", [35, 27, 0.001, -17, 146, 0.004, -31, -54, 0.003, 3, 10, 0.020, 39, 103, 0.002]], ["2000", [, 18, 122, 0.015, -14, -45, 0.001, -3, 14, 0.001, -7, -49, 0.003, 30, 87, 0.000, -27, 28, 0.122, 42, 143, 0.006, 60, 22, 0.002, 32, 108, 0.051, -17, -40, 0.005, 31, -113, 0.001, 28, 39, 0.001, -30, -67, 0.002]]]
 
-            jsonObject = JSON.stringify(jsonObject);
-            console.log(err);
-            //res.render('users', {
-            //    title: 'Visualizations',
-            //    data: jsonObject
-            //});
-            console.log(err);
+            console.log("error opening bucket city data" + err)
 
         } else {
-            bucket.query(query, function (err, results) {
+            bucketAll.query(queryCity, function (err, results) {
                 if (err) {
                     throw err;
                 }
+                //console.log(JSON.stringify(results));
+                for (var i = 0; i < results.length; i++) {
+                    var cityData = results[i].value;
+                    var city = results[i].key;
+                    if (city != "Rágama") {
+                        var max = parseFloat(cityData.max);
+                        var lan = cityData.CityLan;
+                        var lot = cityData.CityLon;
+                        cityValues[city] = {"max": max, "lan": lan, "lot": lot};
+                    }
+                }
 
-                jsonObject = JSON.stringify(results);
-                console.log(results);
-                //res.render('index', {
-                //    title: '3D Timeline',
-                //    data: jsonObject
-                //});
+                console.log(cityValues);
+
+                console.log("After");
+                var cluster = new couchbase.Cluster('192.248.8.247:8091');
+                var ViewQuery = couchbase.ViewQuery;
+                var query = ViewQuery.from('city_cleaned_data_average', 'city_cleaned_data_average').limit(400).group(true);//.order(ViewQuery.Order.DESCENDING);
+                var bucket = cluster.openBucket('air_pollution', function (err) {
+
+
+                    if (err) {
+                        // Failed to make a connection to the Couchbase cluster.
+                        var jsonObject = [["CO", ["Colombo", 6.9270786, 79.861243, 34, 12500]], ["SO2", ["Colombo", 6.9270786, 79.861243, 100, 4000]]];
+                        jsonObject = JSON.stringify(jsonObject);
+                        console.log("error opening bucket city average" + err);
+
+
+                    } else {
+                        bucket.query(query, function (err, results) {
+                            if (err) {
+                                throw err;
+                            }
+
+                            console.log(JSON.stringify(results));
+                            for (var i = 0; i < results.length; i++) {
+                                var cityGasData = results[i].value;
+                                var city = results[i].key;
+                                if (city != "Rágama") {
+                                    var CO = parseFloat(cityGasData.COAvg);
+                                    var SO2 = parseFloat(cityGasData.SO2Avg);
+                                    var NO2 = parseFloat(cityGasData.NO2Avg);
+
+                                    var cityDataValues = cityValues[city];
+
+                                    var max = cityDataValues.max;
+                                    var lan = cityDataValues.lan;
+                                    var lot = cityDataValues.lot;
+
+                                    final[0][1].push(city);
+                                    final[0][1].push(lan);
+                                    final[0][1].push(lot);
+                                    final[0][1].push(CO);
+                                    final[0][1].push(max);
+
+                                    final[1][1].push(city);
+                                    final[1][1].push(lan);
+                                    final[1][1].push(lot);
+                                    final[1][1].push(SO2);
+                                    final[1][1].push(max);
+
+                                    final[2][1].push(city);
+                                    final[2][1].push(lan);
+                                    final[2][1].push(lot);
+                                    final[2][1].push(NO2);
+                                    final[2][1].push(max);
+                                }
+
+                            }
+                            console.log(JSON.stringify(final));
+                            res.render('average', {
+                                title: 'City Level Pollution',
+                                data: JSON.stringify(final)
+                            });
+
+                        });
+                    }
+                });
             });
         }
+
     });
 });
 
@@ -183,7 +249,7 @@ router.get('/average', function (req, res, next) {
     var clusterCity = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQueryCity = couchbase.ViewQuery;
 
-    var queryCity = ViewQueryCity.from('cityData', 'cityData').limit(400);//.order(ViewQuery.Order.DESCENDING);
+    var queryCity = ViewQueryCity.from('all_city', 'all_city').limit(400).group(true);//.order(ViewQuery.Order.DESCENDING);
     var bucketAll = clusterCity.openBucket('air_pollution', function (err) {
         if (err) {
 
@@ -197,18 +263,20 @@ router.get('/average', function (req, res, next) {
                 console.log(JSON.stringify(results));
                 for (var i = 0; i < results.length; i++) {
                     var cityData = results[i].value;
-                    var city = cityData.city;
-                    var max = parseFloat(cityData.max);
-                    var lan = cityData.CityLan;
-                    var lot = cityData.CityLon;
-                    cityValues[city] = {"max": max, "lan": lan, "lot": lot};
+                    var city = results[i].key;
+                    if (city != "Rágama") {
+                        var max = parseFloat(cityData.max);
+                        var lan = cityData.CityLan;
+                        var lot = cityData.CityLon;
+                        cityValues[city] = {"max": max, "lan": lan, "lot": lot};
+                    }
                 }
                 console.log(cityValues);
 
                 console.log("After");
                 var cluster = new couchbase.Cluster('192.248.8.247:8091');
                 var ViewQuery = couchbase.ViewQuery;
-                var query = ViewQuery.from('cleaned_data_average', 'cleaned_data_average').limit(400);//.order(ViewQuery.Order.DESCENDING);
+                var query = ViewQuery.from('city_cleaned_data_average', 'city_cleaned_data_average').limit(400).group(true);//.order(ViewQuery.Order.DESCENDING);
                 var bucket = cluster.openBucket('air_pollution', function (err) {
 
 
@@ -228,34 +296,36 @@ router.get('/average', function (req, res, next) {
                             console.log(JSON.stringify(results));
                             for (var i = 0; i < results.length; i++) {
                                 var cityGasData = results[i].value;
-                                var city = cityGasData.city;
-                                var CO = parseFloat(cityGasData.COAvg);
-                                var SO2 = parseFloat(cityGasData.SO2Avg);
-                                var NO2 = parseFloat(cityGasData.NO2Avg);
+                                var city = results[i].key;
+                                if (city != "Rágama") {
+                                    var CO = parseFloat(cityGasData.COAvg);
+                                    var SO2 = parseFloat(cityGasData.SO2Avg);
+                                    var NO2 = parseFloat(cityGasData.NO2Avg);
 
-                                var cityDataValues = cityValues[city];
+                                    var cityDataValues = cityValues[city];
 
-                                var max = cityDataValues.max;
-                                var lan = cityDataValues.lan;
-                                var lot = cityDataValues.lot;
+                                    var max = cityDataValues.max;
+                                    var lan = cityDataValues.lan;
+                                    var lot = cityDataValues.lot;
 
-                                final[0][1].push(city);
-                                final[0][1].push(lan);
-                                final[0][1].push(lot);
-                                final[0][1].push(CO);
-                                final[0][1].push(max);
+                                    final[0][1].push(city);
+                                    final[0][1].push(lan);
+                                    final[0][1].push(lot);
+                                    final[0][1].push(CO);
+                                    final[0][1].push(max);
 
-                                final[1][1].push(city);
-                                final[1][1].push(lan);
-                                final[1][1].push(lot);
-                                final[1][1].push(SO2);
-                                final[1][1].push(max);
+                                    final[1][1].push(city);
+                                    final[1][1].push(lan);
+                                    final[1][1].push(lot);
+                                    final[1][1].push(SO2);
+                                    final[1][1].push(max);
 
-                                final[2][1].push(city);
-                                final[2][1].push(lan);
-                                final[2][1].push(lot);
-                                final[2][1].push(NO2);
-                                final[2][1].push(max);
+                                    final[2][1].push(city);
+                                    final[2][1].push(lan);
+                                    final[2][1].push(lot);
+                                    final[2][1].push(NO2);
+                                    final[2][1].push(max);
+                                }
 
 
                             }
@@ -388,7 +458,7 @@ router.get('/api', function (req, res, next) {
 
                       var cluster = new couchbase.Cluster('192.248.8.247:8091');
                       var ViewQuery = couchbase.ViewQuery;
-                      var query = ViewQuery.from('average', 'all_average').limit(100);//.order(ViewQuery.Order.DESCENDING);
+                      var query = ViewQuery.from('city_cleaned_data_average', 'city_cleaned_data_average').limit(400).group(true);//.order(ViewQuery.Order.DESCENDING);
                       var bucket = cluster.openBucket('air_pollution', function (err) {
 
 
@@ -401,11 +471,12 @@ router.get('/api', function (req, res, next) {
                                   if (err) {
                                       throw err;
                                   }
+
                                   var found = false;
                                   for (var i = 0; i < results.length; i++) {
                                       var cityGasData = results[i].value;
-                                      var city = cityGasData.city;
-
+                                      var city = results[i].key;
+                                      //console.log(city);
                                       if (givenCity == city) {
                                           found = true;
                                           var foudDataResponse = {};
@@ -462,6 +533,7 @@ router.get('/api', function (req, res, next) {
     }
 });
 
+
 router.get('/averageGMap', function (req, res, next) {
     var jsonObject;
 
@@ -471,7 +543,7 @@ router.get('/averageGMap', function (req, res, next) {
     var clusterCity = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQueryCity = couchbase.ViewQuery;
 
-    var queryCity = ViewQueryCity.from('cityData', 'cityData').limit(400);//.order(ViewQuery.Order.DESCENDING);
+    var queryCity = ViewQueryCity.from('all_city', 'all_city').limit(400).group(true);//.order(ViewQuery.Order.DESCENDING);
     var bucketAll = clusterCity.openBucket('air_pollution', function (err) {
         if (err) {
 
@@ -485,18 +557,20 @@ router.get('/averageGMap', function (req, res, next) {
                 console.log(JSON.stringify(results));
                 for (var i = 0; i < results.length; i++) {
                     var cityData = results[i].value;
-                    var city = cityData.city;
-                    var max = parseFloat(cityData.max);
-                    var lan = cityData.CityLan;
-                    var lot = cityData.CityLon;
-                    cityValues[city] = {"max": max, "lan": lan, "lot": lot};
+                    var city = results[i].key;
+                    if (city != "Rágama") {
+                        var max = parseFloat(cityData.max);
+                        var lan = cityData.CityLan;
+                        var lot = cityData.CityLon;
+                        cityValues[city] = {"max": max, "lan": lan, "lot": lot};
+                    }
                 }
                 console.log(cityValues);
 
                 console.log("After");
                 var cluster = new couchbase.Cluster('192.248.8.247:8091');
                 var ViewQuery = couchbase.ViewQuery;
-                var query = ViewQuery.from('cleaned_data_average', 'cleaned_data_average').limit(400);//.order(ViewQuery.Order.DESCENDING);
+                var query = ViewQuery.from('city_cleaned_data_average', 'city_cleaned_data_average').limit(400).group(true);//.order(ViewQuery.Order.DESCENDING);
                 var bucket = cluster.openBucket('air_pollution', function (err) {
 
 
@@ -516,35 +590,36 @@ router.get('/averageGMap', function (req, res, next) {
                             console.log(JSON.stringify(results));
                             for (var i = 0; i < results.length; i++) {
                                 var cityGasData = results[i].value;
-                                var city = cityGasData.city;
-                                var CO = parseFloat(cityGasData.COAvg);
-                                var SO2 = parseFloat(cityGasData.SO2Avg);
-                                var NO2 = parseFloat(cityGasData.NO2Avg);
+                                var city = results[i].key;
+                                if (city != "Rágama") {
+                                    var CO = parseFloat(cityGasData.COAvg);
+                                    var SO2 = parseFloat(cityGasData.SO2Avg);
+                                    var NO2 = parseFloat(cityGasData.NO2Avg);
 
-                                var cityDataValues = cityValues[city];
+                                    var cityDataValues = cityValues[city];
 
-                                var max = cityDataValues.max;
-                                var lan = cityDataValues.lan;
-                                var lot = cityDataValues.lot;
+                                    var max = cityDataValues.max;
+                                    var lan = cityDataValues.lan;
+                                    var lot = cityDataValues.lot;
 
-                                final[0][1].push(city);
-                                final[0][1].push(lan);
-                                final[0][1].push(lot);
-                                final[0][1].push(CO);
-                                final[0][1].push(max);
+                                    final[0][1].push(city);
+                                    final[0][1].push(lan);
+                                    final[0][1].push(lot);
+                                    final[0][1].push(CO);
+                                    final[0][1].push(max);
 
-                                final[1][1].push(city);
-                                final[1][1].push(lan);
-                                final[1][1].push(lot);
-                                final[1][1].push(SO2);
-                                final[1][1].push(max);
+                                    final[1][1].push(city);
+                                    final[1][1].push(lan);
+                                    final[1][1].push(lot);
+                                    final[1][1].push(SO2);
+                                    final[1][1].push(max);
 
-                                final[2][1].push(city);
-                                final[2][1].push(lan);
-                                final[2][1].push(lot);
-                                final[2][1].push(NO2);
-                                final[2][1].push(max);
-
+                                    final[2][1].push(city);
+                                    final[2][1].push(lan);
+                                    final[2][1].push(lot);
+                                    final[2][1].push(NO2);
+                                    final[2][1].push(max);
+                                }
 
                             }
                             console.log(JSON.stringify(final));
@@ -572,7 +647,7 @@ router.get('/cityGases', function (req, res, next) {
     var clusterCity = new couchbase.Cluster('192.248.8.247:8091');
     var ViewQueryCity = couchbase.ViewQuery;
 
-    var queryCity = ViewQueryCity.from('cityData', 'cityData').limit(400);//.order(ViewQuery.Order.DESCENDING);
+    var queryCity = ViewQueryCity.from('all_city', 'all_city').limit(400).group(true);//.order(ViewQuery.Order.DESCENDING);
     var bucketAll = clusterCity.openBucket('air_pollution', function (err) {
         if (err) {
 
@@ -586,18 +661,20 @@ router.get('/cityGases', function (req, res, next) {
                 console.log(JSON.stringify(results));
                 for (var i = 0; i < results.length; i++) {
                     var cityData = results[i].value;
-                    var city = cityData.city;
-                    var max = parseFloat(cityData.max);
-                    var lan = cityData.CityLan;
-                    var lot = cityData.CityLon;
-                    cityValues[city] = {"max": max, "lan": lan, "lot": lot};
+                    var city = results[i].key;
+                    if (city != "Rágama") {
+                        var max = parseFloat(cityData.max);
+                        var lan = cityData.CityLan;
+                        var lot = cityData.CityLon;
+                        cityValues[city] = {"max": max, "lan": lan, "lot": lot};
+                    }
                 }
                 console.log(cityValues);
 
                 console.log("After");
                 var cluster = new couchbase.Cluster('192.248.8.247:8091');
                 var ViewQuery = couchbase.ViewQuery;
-                var query = ViewQuery.from('cleaned_data_average', 'cleaned_data_average').limit(400);//.order(ViewQuery.Order.DESCENDING);
+                var query = ViewQuery.from('city_cleaned_data_average', 'city_cleaned_data_average').limit(400).group(true);//.order(ViewQuery.Order.DESCENDING);
                 var bucket = cluster.openBucket('air_pollution', function (err) {
 
 
@@ -617,35 +694,36 @@ router.get('/cityGases', function (req, res, next) {
                             console.log(JSON.stringify(results));
                             for (var i = 0; i < results.length; i++) {
                                 var cityGasData = results[i].value;
-                                var city = cityGasData.city;
-                                var CO = parseFloat(cityGasData.COAvg);
-                                var SO2 = parseFloat(cityGasData.SO2Avg);
-                                var NO2 = parseFloat(cityGasData.NO2Avg);
+                                var city = results[i].key;
+                                if (city != "Rágama") {
+                                    var CO = parseFloat(cityGasData.COAvg);
+                                    var SO2 = parseFloat(cityGasData.SO2Avg);
+                                    var NO2 = parseFloat(cityGasData.NO2Avg);
 
-                                var cityDataValues = cityValues[city];
+                                    var cityDataValues = cityValues[city];
 
-                                var max = cityDataValues.max;
-                                var lan = cityDataValues.lan;
-                                var lot = cityDataValues.lot;
+                                    var max = cityDataValues.max;
+                                    var lan = cityDataValues.lan;
+                                    var lot = cityDataValues.lot;
 
-                                final[0][1].push(city);
-                                final[0][1].push(lan);
-                                final[0][1].push(lot);
-                                final[0][1].push(CO);
-                                final[0][1].push(max);
+                                    final[0][1].push(city);
+                                    final[0][1].push(lan);
+                                    final[0][1].push(lot);
+                                    final[0][1].push(CO);
+                                    final[0][1].push(max);
 
-                                final[1][1].push(city);
-                                final[1][1].push(lan);
-                                final[1][1].push(lot);
-                                final[1][1].push(SO2);
-                                final[1][1].push(max);
+                                    final[1][1].push(city);
+                                    final[1][1].push(lan);
+                                    final[1][1].push(lot);
+                                    final[1][1].push(SO2);
+                                    final[1][1].push(max);
 
-                                final[2][1].push(city);
-                                final[2][1].push(lan);
-                                final[2][1].push(lot);
-                                final[2][1].push(NO2);
-                                final[2][1].push(max);
-
+                                    final[2][1].push(city);
+                                    final[2][1].push(lan);
+                                    final[2][1].push(lot);
+                                    final[2][1].push(NO2);
+                                    final[2][1].push(max);
+                                }
 
                             }
                             console.log(JSON.stringify(final));
