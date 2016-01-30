@@ -27,13 +27,14 @@ function processJson() {
     for(var i = 0; i < jsondata.length; i++) {
         var cities = jsondata[i];
         var gas = cities[0];
-        for(var j = 1; j < cities.length; j++){
-            var city = cities[j][0];
+        for(var j = 0; j < cities[1].length; j+=5){
+            var city = cities[1][j];
+            console.log(city);
             if(!result.hasOwnProperty(city)) {
                 result[city] = [[],[]];
             }
             result[city][0].push(gas);
-            result[city][1].push(cities[j][3]);
+            result[city][1].push(cities[1][j + 3]);
         }
     }
     return result;
