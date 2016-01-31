@@ -4,8 +4,16 @@ jsondata = processJson();
 fillCombo();
 
 function refresh(event) {
+    document.getElementById('canvas').remove();
+    var canvas = document.createElement('canvas');
+    canvas.setAttribute('id', 'canvas');
+    canvas.setAttribute('width', '800');
+    canvas.setAttribute('height', '600');
+    var parent = document.getElementById("canvas-div");
+    parent.appendChild(canvas);
+    ctx = canvas.getContext("2d");
     var city = this.options[this.selectedIndex].innerHTML;
-    setDataset(selectedText);
+    setDataset(city);
 }
 
 function fillCombo() {

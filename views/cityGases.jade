@@ -34,7 +34,8 @@ html
 
     script(src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js")
     body
-        canvas(id="canvas" width="800" height="500")
+        div(id="canvas-div")
+            canvas(id="canvas" width="800" height="500")
         div(id="combo")
             select(id="combobox", class="box", onchange="refresh.call(this, event)")
         div(id="yAxis")

@@ -55,7 +55,7 @@ function addMarkers(index) {
       strokeColor: '#fff',
       strokeWeight: 0.5,
       fillColor: color,
-      fillOpacity: 30 / jsondata[index][1][i + 3] ,
+      fillOpacity: 0.7 ,
       animation: google.maps.Animation.DROP,
       map: map,
       center: new google.maps.LatLng(jsondata[index][1][i + 1], jsondata[index][1][i + 2]),
