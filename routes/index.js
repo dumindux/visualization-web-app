@@ -25,7 +25,7 @@ router.get('/3dtimeline', function (req, res, next) {
         } else {
             bucket.query(query, function (err, results) {
                 if (err) {
-                    throw err;
+                    console.log("Query error");
                 }
 
                 //var jsonObject = [["CO", []],["SO2", []]];
@@ -95,7 +95,7 @@ router.get('/2ddotmap', function (req, res, next) {
         } else {
             bucket.query(query, function (err, results) {
                 if (err) {
-                    throw err;
+                    console.log("Query error");
                 }
 
                 //var jsonObject = [["CO", []],["SO2", []]];
@@ -289,7 +289,7 @@ router.get('/heatmap', function (req, res, next) {
         } else {
             bucket.query(query, function (err, results) {
                 if (err) {
-                    throw err;
+                    console.log("Query error");
                 }
 
                 //var jsonObject = [["CO", []],["SO2", []]];
@@ -366,7 +366,7 @@ router.get('/api', function (req, res, next) {
                           } else {
                               bucket.query(query, function (err, results) {
                                   if (err) {
-                                      throw err;
+                                      console.log("Query error");
                                   }
 
                                   var found = false;
@@ -481,7 +481,7 @@ router.get('/averageGMap', function (req, res, next) {
                     } else {
                         bucket.query(query, function (err, results) {
                             if (err) {
-                                throw err;
+                                console.log("Query error");
                             }
 
                             console.log(JSON.stringify(results));
@@ -585,7 +585,7 @@ router.get('/cityGases', function (req, res, next) {
                     } else {
                         bucket.query(query, function (err, results) {
                             if (err) {
-                                throw err;
+                                console.log("Query error");
                             }
 
                             console.log(JSON.stringify(results));
