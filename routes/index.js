@@ -26,37 +26,37 @@ router.get('/3dtimeline', function (req, res, next) {
             bucket.query(query, function (err, results) {
                 if (err) {
                     console.log("Query error");
-                }
+                } else {
 
-                //var jsonObject = [["CO", []],["SO2", []]];
+                    //var jsonObject = [["CO", []],["SO2", []]];
 
-                var jsonObject = [];
-                var gasesMap = {};
-                var count = 0;
+                    var jsonObject = [];
+                    var gasesMap = {};
+                    var count = 0;
 
-                for (var i = 0; i < results.length; i++) {
+                    for (var i = 0; i < results.length; i++) {
 
-                    var singleValue = results[i].value;
-                    var gases = singleValue.gases;
+                        var singleValue = results[i].value;
+                        var gases = singleValue.gases;
 
-                    for (var j = 0; j < gases.length; j++) {
-                        if (gasesMap[gases[j]] == undefined) {
-                            gasesMap[gases[j]] = count;
-                            jsonObject[count] = [];
-                            jsonObject[count][0] = gases[j];
-                            jsonObject[count][1] = [];
-                            count++;
+                        for (var j = 0; j < gases.length; j++) {
+                            if (gasesMap[gases[j]] == undefined) {
+                                gasesMap[gases[j]] = count;
+                                jsonObject[count] = [];
+                                jsonObject[count][0] = gases[j];
+                                jsonObject[count][1] = [];
+                                count++;
+                            }
+
+                            jsonObject[gasesMap[gases[j]]][1].push(singleValue.lat);
+                            jsonObject[gasesMap[gases[j]]][1].push(singleValue.lon);
+                            jsonObject[gasesMap[gases[j]]][1].push(parseInt(singleValue[gases[j]]));
+                            jsonObject[gasesMap[gases[j]]][1].push(singleValue.Time);
+
                         }
 
-                        jsonObject[gasesMap[gases[j]]][1].push(singleValue.lat);
-                        jsonObject[gasesMap[gases[j]]][1].push(singleValue.lon);
-                        jsonObject[gasesMap[gases[j]]][1].push(parseInt(singleValue[gases[j]]));
-                        jsonObject[gasesMap[gases[j]]][1].push(singleValue.Time);
-
                     }
-
                 }
-
                 jsonObject = JSON.stringify(jsonObject);
                 res.render('index', {
                     title: '3D Timeline',
@@ -96,37 +96,37 @@ router.get('/2ddotmap', function (req, res, next) {
             bucket.query(query, function (err, results) {
                 if (err) {
                     console.log("Query error");
-                }
+                } else {
 
-                //var jsonObject = [["CO", []],["SO2", []]];
+                    //var jsonObject = [["CO", []],["SO2", []]];
 
-                var jsonObject = [];
-                var gasesMap = {};
-                var count = 0;
+                    var jsonObject = [];
+                    var gasesMap = {};
+                    var count = 0;
 
-                for (var i = 0; i < results.length; i++) {
+                    for (var i = 0; i < results.length; i++) {
 
-                    var singleValue = results[i].value;
-                    var gases = singleValue.gases;
+                        var singleValue = results[i].value;
+                        var gases = singleValue.gases;
 
-                    for (var j = 0; j < gases.length; j++) {
-                        if (gasesMap[gases[j]] == undefined) {
-                            gasesMap[gases[j]] = count;
-                            jsonObject[count] = [];
-                            jsonObject[count][0] = gases[j];
-                            jsonObject[count][1] = [];
-                            count++;
+                        for (var j = 0; j < gases.length; j++) {
+                            if (gasesMap[gases[j]] == undefined) {
+                                gasesMap[gases[j]] = count;
+                                jsonObject[count] = [];
+                                jsonObject[count][0] = gases[j];
+                                jsonObject[count][1] = [];
+                                count++;
+                            }
+
+                            jsonObject[gasesMap[gases[j]]][1].push(singleValue.lat);
+                            jsonObject[gasesMap[gases[j]]][1].push(singleValue.lon);
+                            jsonObject[gasesMap[gases[j]]][1].push(parseInt(singleValue[gases[j]]));
+                            jsonObject[gasesMap[gases[j]]][1].push(singleValue.Time);
+
                         }
 
-                        jsonObject[gasesMap[gases[j]]][1].push(singleValue.lat);
-                        jsonObject[gasesMap[gases[j]]][1].push(singleValue.lon);
-                        jsonObject[gasesMap[gases[j]]][1].push(parseInt(singleValue[gases[j]]));
-                        jsonObject[gasesMap[gases[j]]][1].push(singleValue.Time);
-
                     }
-
                 }
-
                 jsonObject = JSON.stringify(jsonObject);
                 res.render('2ddots', {
                     title: '2D Dot Map',
@@ -188,43 +188,44 @@ router.get('/average', function (req, res, next) {
                         bucket.query(query, function (err, results) {
                             if (err) {
                                 console.log("error query" + err);
-                            }
+                            } else {
 
-                            console.log(JSON.stringify(results));
-                            for (var i = 0; i < results.length; i++) {
-                                var cityGasData = results[i].value;
-                                var city = results[i].key;
-                                if (city != "Rágama") {
-                                    var CO = parseFloat(cityGasData.COAvg);
-                                    var SO2 = parseFloat(cityGasData.SO2Avg);
-                                    var NO2 = parseFloat(cityGasData.NO2Avg);
+                                console.log(JSON.stringify(results));
+                                for (var i = 0; i < results.length; i++) {
+                                    var cityGasData = results[i].value;
+                                    var city = results[i].key;
+                                    if (city != "Rágama") {
+                                        var CO = parseFloat(cityGasData.COAvg);
+                                        var SO2 = parseFloat(cityGasData.SO2Avg);
+                                        var NO2 = parseFloat(cityGasData.NO2Avg);
 
-                                    var cityDataValues = cityValues[city];
+                                        var cityDataValues = cityValues[city];
 
-                                    var max = cityDataValues.max;
-                                    var lan = cityDataValues.lan;
-                                    var lot = cityDataValues.lot;
+                                        var max = cityDataValues.max;
+                                        var lan = cityDataValues.lan;
+                                        var lot = cityDataValues.lot;
 
-                                    final[0][1].push(city);
-                                    final[0][1].push(lan);
-                                    final[0][1].push(lot);
-                                    final[0][1].push(CO);
-                                    final[0][1].push(max);
+                                        final[0][1].push(city);
+                                        final[0][1].push(lan);
+                                        final[0][1].push(lot);
+                                        final[0][1].push(CO);
+                                        final[0][1].push(max);
 
-                                    final[1][1].push(city);
-                                    final[1][1].push(lan);
-                                    final[1][1].push(lot);
-                                    final[1][1].push(SO2);
-                                    final[1][1].push(max);
+                                        final[1][1].push(city);
+                                        final[1][1].push(lan);
+                                        final[1][1].push(lot);
+                                        final[1][1].push(SO2);
+                                        final[1][1].push(max);
 
-                                    final[2][1].push(city);
-                                    final[2][1].push(lan);
-                                    final[2][1].push(lot);
-                                    final[2][1].push(NO2);
-                                    final[2][1].push(max);
+                                        final[2][1].push(city);
+                                        final[2][1].push(lan);
+                                        final[2][1].push(lot);
+                                        final[2][1].push(NO2);
+                                        final[2][1].push(max);
+                                    }
+
+
                                 }
-
-
                             }
                             console.log(JSON.stringify(final));
                             res.render('average', {
@@ -290,31 +291,31 @@ router.get('/heatmap', function (req, res, next) {
             bucket.query(query, function (err, results) {
                 if (err) {
                     console.log("Query error");
-                }
+                } else {
 
-                //var jsonObject = [["CO", []],["SO2", []]];
+                    //var jsonObject = [["CO", []],["SO2", []]];
 
-                var jsonObject = {};
-                var gasesMap = {};
-                var count = 0;
+                    var jsonObject = {};
+                    var gasesMap = {};
+                    var count = 0;
 
-                for (var i = 0; i < results.length; i++) {
+                    for (var i = 0; i < results.length; i++) {
 
-                    var singleValue = results[i].value;
-                    var gases = singleValue.gases;
+                        var singleValue = results[i].value;
+                        var gases = singleValue.gases;
 
-                    for (var j = 0; j < gases.length; j++) {
-                        if (jsonObject[gases[j]] == undefined) {
-                            jsonObject[gases[j]] = [];
+                        for (var j = 0; j < gases.length; j++) {
+                            if (jsonObject[gases[j]] == undefined) {
+                                jsonObject[gases[j]] = [];
+                            }
+                            var values = [];
+                            values.push(singleValue.lat);
+                            values.push(singleValue.lon);
+                            jsonObject[gases[j]].push(values);
+                            //jsonObject[gasesMap[gases[j]]].push(singleValue.Time);
                         }
-                        var values = [];
-                        values.push(singleValue.lat);
-                        values.push(singleValue.lon);
-                        jsonObject[gases[j]].push(values);
-                        //jsonObject[gasesMap[gases[j]]].push(singleValue.Time);
                     }
                 }
-
                 jsonObject = JSON.stringify(jsonObject);
                 res.render('contributions', {
                     title: 'Contributions',
@@ -482,42 +483,43 @@ router.get('/averageGMap', function (req, res, next) {
                         bucket.query(query, function (err, results) {
                             if (err) {
                                 console.log("Query error");
-                            }
+                            } else {
 
-                            console.log(JSON.stringify(results));
-                            for (var i = 0; i < results.length; i++) {
-                                var cityGasData = results[i].value;
-                                var city = results[i].key;
-                                if (city != "Rágama") {
-                                    var CO = parseFloat(cityGasData.COAvg);
-                                    var SO2 = parseFloat(cityGasData.SO2Avg);
-                                    var NO2 = parseFloat(cityGasData.NO2Avg);
+                                console.log(JSON.stringify(results));
+                                for (var i = 0; i < results.length; i++) {
+                                    var cityGasData = results[i].value;
+                                    var city = results[i].key;
+                                    if (city != "Rágama") {
+                                        var CO = parseFloat(cityGasData.COAvg);
+                                        var SO2 = parseFloat(cityGasData.SO2Avg);
+                                        var NO2 = parseFloat(cityGasData.NO2Avg);
 
-                                    var cityDataValues = cityValues[city];
+                                        var cityDataValues = cityValues[city];
 
-                                    var max = cityDataValues.max;
-                                    var lan = cityDataValues.lan;
-                                    var lot = cityDataValues.lot;
+                                        var max = cityDataValues.max;
+                                        var lan = cityDataValues.lan;
+                                        var lot = cityDataValues.lot;
 
-                                    final[0][1].push(city);
-                                    final[0][1].push(lan);
-                                    final[0][1].push(lot);
-                                    final[0][1].push(CO);
-                                    final[0][1].push(max);
+                                        final[0][1].push(city);
+                                        final[0][1].push(lan);
+                                        final[0][1].push(lot);
+                                        final[0][1].push(CO);
+                                        final[0][1].push(max);
 
-                                    final[1][1].push(city);
-                                    final[1][1].push(lan);
-                                    final[1][1].push(lot);
-                                    final[1][1].push(SO2);
-                                    final[1][1].push(max);
+                                        final[1][1].push(city);
+                                        final[1][1].push(lan);
+                                        final[1][1].push(lot);
+                                        final[1][1].push(SO2);
+                                        final[1][1].push(max);
 
-                                    final[2][1].push(city);
-                                    final[2][1].push(lan);
-                                    final[2][1].push(lot);
-                                    final[2][1].push(NO2);
-                                    final[2][1].push(max);
+                                        final[2][1].push(city);
+                                        final[2][1].push(lan);
+                                        final[2][1].push(lot);
+                                        final[2][1].push(NO2);
+                                        final[2][1].push(max);
+                                    }
+
                                 }
-
                             }
                             console.log(JSON.stringify(final));
                             res.render('averageGMap', {
@@ -586,48 +588,51 @@ router.get('/cityGases', function (req, res, next) {
                         bucket.query(query, function (err, results) {
                             if (err) {
                                 console.log("Query error");
-                            }
+                            } else {
 
-                            console.log(JSON.stringify(results));
-                            for (var i = 0; i < results.length; i++) {
-                                var cityGasData = results[i].value;
-                                var city = results[i].key;
-                                if (city != "Rágama") {
-                                    var CO = parseFloat(cityGasData.COAvg);
-                                    var SO2 = parseFloat(cityGasData.SO2Avg);
-                                    var NO2 = parseFloat(cityGasData.NO2Avg);
+                                console.log(JSON.stringify(results));
+                                for (var i = 0; i < results.length; i++) {
+                                    var cityGasData = results[i].value;
+                                    var city = results[i].key;
+                                    if (city != "Rágama") {
+                                        var CO = parseFloat(cityGasData.COAvg);
+                                        var SO2 = parseFloat(cityGasData.SO2Avg);
+                                        var NO2 = parseFloat(cityGasData.NO2Avg);
 
-                                    var cityDataValues = cityValues[city];
+                                        var cityDataValues = cityValues[city];
 
-                                    var max = cityDataValues.max;
-                                    var lan = cityDataValues.lan;
-                                    var lot = cityDataValues.lot;
+                                        var max = cityDataValues.max;
+                                        var lan = cityDataValues.lan;
+                                        var lot = cityDataValues.lot;
 
-                                    final[0][1].push(city);
-                                    final[0][1].push(lan);
-                                    final[0][1].push(lot);
-                                    final[0][1].push(CO);
-                                    final[0][1].push(max);
+                                        final[0][1].push(city);
+                                        final[0][1].push(lan);
+                                        final[0][1].push(lot);
+                                        final[0][1].push(CO);
+                                        final[0][1].push(max);
 
-                                    final[1][1].push(city);
-                                    final[1][1].push(lan);
-                                    final[1][1].push(lot);
-                                    final[1][1].push(SO2);
-                                    final[1][1].push(max);
+                                        final[1][1].push(city);
+                                        final[1][1].push(lan);
+                                        final[1][1].push(lot);
+                                        final[1][1].push(SO2);
+                                        final[1][1].push(max);
 
-                                    final[2][1].push(city);
-                                    final[2][1].push(lan);
-                                    final[2][1].push(lot);
-                                    final[2][1].push(NO2);
-                                    final[2][1].push(max);
+                                        final[2][1].push(city);
+                                        final[2][1].push(lan);
+                                        final[2][1].push(lot);
+                                        final[2][1].push(NO2);
+                                        final[2][1].push(max);
+                                    }
+
                                 }
-
                             }
                             console.log(JSON.stringify(final));
                             res.render('cityGases', {
                                 title: 'City Level Gases',
                                 data: JSON.stringify(final)
                             });
+
+
 
                         });
                     }
