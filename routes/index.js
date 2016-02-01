@@ -155,7 +155,7 @@ router.get('/average', function (req, res, next) {
         } else {
             bucketAll.query(queryCity, function (err, results) {
                 if (err) {
-                    throw err;
+                    console.log("Error query");
                 }
                 console.log(JSON.stringify(results));
                 for (var i = 0; i < results.length; i++) {
