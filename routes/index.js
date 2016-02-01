@@ -187,7 +187,7 @@ router.get('/average', function (req, res, next) {
                     } else {
                         bucket.query(query, function (err, results) {
                             if (err) {
-                                throw err;
+                                console.log("error query" + err);
                             }
 
                             console.log(JSON.stringify(results));
