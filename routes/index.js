@@ -161,12 +161,12 @@ router.get('/average', function (req, res, next) {
                 for (var i = 0; i < results.length; i++) {
                     var cityData = results[i].value;
                     var city = results[i].key;
-                    if (city != "Rágama") {
-                        var max = parseFloat(cityData.max);
+
+                    var max = parseFloat(cityData.max);
                         var lan = cityData.CityLan;
                         var lot = cityData.CityLon;
                         cityValues[city] = {"max": max, "lan": lan, "lot": lot};
-                    }
+
                 }
                 console.log(cityValues);
 
@@ -194,8 +194,8 @@ router.get('/average', function (req, res, next) {
                                 for (var i = 0; i < results.length; i++) {
                                     var cityGasData = results[i].value;
                                     var city = results[i].key;
-                                    if (city != "Rágama") {
-                                        var CO = parseFloat(cityGasData.COAvg);
+
+                                    var CO = parseFloat(cityGasData.COAvg);
                                         var SO2 = parseFloat(cityGasData.SO2Avg);
                                         var NO2 = parseFloat(cityGasData.NO2Avg);
 
@@ -222,7 +222,6 @@ router.get('/average', function (req, res, next) {
                                         final[2][1].push(lot);
                                         final[2][1].push(NO2);
                                         final[2][1].push(max);
-                                    }
 
 
                                 }
@@ -456,12 +455,12 @@ router.get('/averageGMap', function (req, res, next) {
                 for (var i = 0; i < results.length; i++) {
                     var cityData = results[i].value;
                     var city = results[i].key;
-                    if (city != "Rágama") {
-                        var max = parseFloat(cityData.max);
+
+                    var max = parseFloat(cityData.max);
                         var lan = cityData.CityLan;
                         var lot = cityData.CityLon;
                         cityValues[city] = {"max": max, "lan": lan, "lot": lot};
-                    }
+
                 }
                 console.log(cityValues);
 
@@ -489,8 +488,8 @@ router.get('/averageGMap', function (req, res, next) {
                                 for (var i = 0; i < results.length; i++) {
                                     var cityGasData = results[i].value;
                                     var city = results[i].key;
-                                    if (city != "Rágama") {
-                                        var CO = parseFloat(cityGasData.COAvg);
+
+                                    var CO = parseFloat(cityGasData.COAvg);
                                         var SO2 = parseFloat(cityGasData.SO2Avg);
                                         var NO2 = parseFloat(cityGasData.NO2Avg);
 
@@ -517,7 +516,7 @@ router.get('/averageGMap', function (req, res, next) {
                                         final[2][1].push(lot);
                                         final[2][1].push(NO2);
                                         final[2][1].push(max);
-                                    }
+
 
                                 }
                             }
@@ -561,12 +560,12 @@ router.get('/cityGases', function (req, res, next) {
                 for (var i = 0; i < results.length; i++) {
                     var cityData = results[i].value;
                     var city = results[i].key;
-                    if (city != "Rágama") {
-                        var max = parseFloat(cityData.max);
+
+                    var max = parseFloat(cityData.max);
                         var lan = cityData.CityLan;
                         var lot = cityData.CityLon;
                         cityValues[city] = {"max": max, "lan": lan, "lot": lot};
-                    }
+
                 }
                 console.log(cityValues);
 
@@ -594,8 +593,8 @@ router.get('/cityGases', function (req, res, next) {
                                 for (var i = 0; i < results.length; i++) {
                                     var cityGasData = results[i].value;
                                     var city = results[i].key;
-                                    if (city != "Rágama") {
-                                        var CO = parseFloat(cityGasData.COAvg);
+
+                                    var CO = parseFloat(cityGasData.COAvg);
                                         var SO2 = parseFloat(cityGasData.SO2Avg);
                                         var NO2 = parseFloat(cityGasData.NO2Avg);
 
@@ -622,7 +621,7 @@ router.get('/cityGases', function (req, res, next) {
                                         final[2][1].push(lot);
                                         final[2][1].push(NO2);
                                         final[2][1].push(max);
-                                    }
+
 
                                 }
                             }
