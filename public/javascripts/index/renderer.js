@@ -290,7 +290,7 @@ WebGLGlobeDataSource.prototype.load = function(data) {
             //var avai = new Cesium.TimeIntervalCollection(time);
 
             var start = Cesium.JulianDate.fromDate(new Date(time));
-            var stop = Cesium.JulianDate.addSeconds(start, 60, new Cesium.JulianDate());
+            var stop = Cesium.JulianDate.addSeconds(start, 60 * 60, new Cesium.JulianDate());
             ////////////////////
 
             //The polyline instance itself needs to be on an entity.
@@ -299,10 +299,10 @@ WebGLGlobeDataSource.prototype.load = function(data) {
                 show : show,
                 polyline : polyline,
                 seriesName : seriesName, //Custom property to indicate series name
-                //availability:new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
-                //    start : start,
-                //    stop : stop
-                //})]),
+                availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+                    start: start,
+                    stop: stop
+                })]),
                 name: seriesName + ": " + height + " PPM"
             });
 
@@ -355,7 +355,7 @@ for (var i = 0; i < dataSource.seriesNames.length; i++) {
 Manager.addToolbarMenu(options, "combo1");
 
 //////////
-var start = Cesium.JulianDate.fromDate(new Date("Thu Dec 17 2015 00:00:00"));
+var start = Cesium.JulianDate.fromDate(new Date("Thu Jan 1 2016 00:00:00"));
 var stop = Cesium.JulianDate.fromDate(new Date());
 //Make sure viewer is at the desired time.
 viewer.clock.startTime = start.clone();
