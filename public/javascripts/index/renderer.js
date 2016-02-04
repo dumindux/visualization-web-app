@@ -339,7 +339,7 @@ console.log("loaded");
 
 //Create a Viewer instances and add the DataSource.
 var viewer = new Cesium.Viewer('cesiumContainer', {
-    animation : false,
+    animation: true,
     timeline : true
 });
 viewer.clock.shouldAnimate = false;

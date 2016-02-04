@@ -1,18 +1,8 @@
 /**
- * This class is an example of a custom DataSource.  It loads JSON data as
- * defined by Google's WebGL Globe, https://github.com/dataarts/webgl-globe.
- * @alias WebGLGlobeDataSource
- * @constructor
- *
- * @param {String} [name] The name of this data source.  If undefined, a name
- *                        will be derived from the url.
- *
- * @example
- * var dataSource = new Cesium.WebGLGlobeDataSource();
- * dataSource.loadUrl('sample.json');
- * viewer.dataSources.add(dataSource);
+ * Created by nuwan on 12/22/15.
  */
-var WebGLGlobeDataSource = function(name) {
+
+var WebGLGlobeDataSource = function (name) {
     //All public configuration is defined as ES5 properties
     //These are just the "private" variables and their defaults.
     this._name = name;
@@ -23,6 +13,7 @@ var WebGLGlobeDataSource = function(name) {
     this._entityCollection = new Cesium.EntityCollection();
     this._seriesNames = [];
     this._seriesToDisplay = undefined;
+    this._heightScale = 70
 };
 
 Object.defineProperties(WebGLGlobeDataSource.prototype, {
@@ -33,8 +24,8 @@ Object.defineProperties(WebGLGlobeDataSource.prototype, {
      * @memberof WebGLGlobeDataSource.prototype
      * @type {String}
      */
-    name : {
-        get : function() {
+    name: {
+        get: function () {
             return this._name;
         }
     },
@@ -43,17 +34,17 @@ Object.defineProperties(WebGLGlobeDataSource.prototype, {
      * @memberof WebGLGlobeDataSource.prototype
      * @type {DataSourceClock}
      */
-    clock : {
-        value : undefined,
-        writable : false
+    clock: {
+        value: undefined,
+        writable: false
     },
     /**
      * Gets the collection of Entity instances.
      * @memberof WebGLGlobeDataSource.prototype
      * @type {EntityCollection}
      */
-    entities : {
-        get : function() {
+    entities: {
+        get: function () {
             return this._entityCollection;
         }
     },
@@ -62,8 +53,8 @@ Object.defineProperties(WebGLGlobeDataSource.prototype, {
      * @memberof WebGLGlobeDataSource.prototype
      * @type {Boolean}
      */
-    isLoading : {
-        get : function() {
+    isLoading: {
+        get: function () {
             return this._isLoading;
         }
     },
@@ -72,8 +63,8 @@ Object.defineProperties(WebGLGlobeDataSource.prototype, {
      * @memberof WebGLGlobeDataSource.prototype
      * @type {Event}
      */
-    changedEvent : {
-        get : function() {
+    changedEvent: {
+        get: function () {
             return this._changed;
         }
     },
@@ -83,8 +74,8 @@ Object.defineProperties(WebGLGlobeDataSource.prototype, {
      * @memberof WebGLGlobeDataSource.prototype
      * @type {Event}
      */
-    errorEvent : {
-        get : function() {
+    errorEvent: {
+        get: function () {
             return this._error;
         }
     },
@@ -94,8 +85,8 @@ Object.defineProperties(WebGLGlobeDataSource.prototype, {
      * @memberof WebGLGlobeDataSource.prototype
      * @type {Event}
      */
-    loadingEvent : {
-        get : function() {
+    loadingEvent: {
+        get: function () {
             return this._loading;
         }
     },
@@ -107,8 +98,8 @@ Object.defineProperties(WebGLGlobeDataSource.prototype, {
      * @memberof WebGLGlobeDataSource.prototype
      * @type {String[]}
      */
-    seriesNames : {
-        get : function() {
+    seriesNames: {
+        get: function () {
             return this._seriesNames;
         }
     },
@@ -119,11 +110,11 @@ Object.defineProperties(WebGLGlobeDataSource.prototype, {
      * @memberof WebGLGlobeDataSource.prototype
      * @type {String}
      */
-    seriesToDisplay : {
-        get : function() {
+    seriesToDisplay: {
+        get: function () {
             return this._seriesToDisplay;
         },
-        set : function(value) {
+        set: function (value) {
             this._seriesToDisplay = value;
 
             //Iterate over all entities and set their show property
@@ -143,11 +134,11 @@ Object.defineProperties(WebGLGlobeDataSource.prototype, {
      * @memberof WebGLGlobeDataSource.prototype
      * @type {Number}
      */
-    heightScale : {
-        get : function() {
+    heightScale: {
+        get: function () {
             return this._heightScale;
         },
-        set : function(value) {
+        set: function (value) {
             if (value > 0) {
                 throw new Cesium.DeveloperError('value must be greater than 0');
             }
@@ -161,7 +152,7 @@ Object.defineProperties(WebGLGlobeDataSource.prototype, {
  * @param {Object} url The url to be processed.
  * @returns {Promise} a promise that will resolve when the GeoJSON is loaded.
  */
-WebGLGlobeDataSource.prototype.loadUrl = function(url) {
+WebGLGlobeDataSource.prototype.loadUrl = function (url) {
     if (!Cesium.defined(url)) {
         throw new Cesium.DeveloperError('url is required.');
     }
@@ -178,9 +169,9 @@ WebGLGlobeDataSource.prototype.loadUrl = function(url) {
     //Use 'when' to load the URL into a json object
     //and then process is with the `load` function.
     var that = this;
-    return Cesium.when(Cesium.loadJson(url), function(json) {
+    return Cesium.when(Cesium.loadJson(url), function (json) {
         return that.load(json, url);
-    }).otherwise(function(error) {
+    }).otherwise(function (error) {
         //Otherwise will catch any errors or exceptions that occur
         //during the promise processing. When this happens,
         //we raise the error event and reject the promise.
@@ -194,7 +185,7 @@ WebGLGlobeDataSource.prototype.loadUrl = function(url) {
  * Loads the provided data, replacing any existing data.
  * @param {Object} data The object to be processed.
  */
-WebGLGlobeDataSource.prototype.load = function(data) {
+WebGLGlobeDataSource.prototype.load = function (data) {
     //>>includeStart('debug', pragmas.debug);
     if (!Cesium.defined(data)) {
         throw new Cesium.DeveloperError('data is required.');
@@ -212,6 +203,8 @@ WebGLGlobeDataSource.prototype.load = function(data) {
 
     entities.suspendEvents();
     entities.removeAll();
+    dots = data[1];
+    data = data[0];
 
     // Loop over each series
     for (var x = 0; x < data.length; x++) {
@@ -230,21 +223,37 @@ WebGLGlobeDataSource.prototype.load = function(data) {
 
         //Now loop over each coordinate in the series and create
         // our entities from the data.
-        for (var i = 0; i < coordinates.length; i += 4) {
-            var latitude = coordinates[i];
-            var longitude = coordinates[i + 1];
-            var height = coordinates[i + 2];
-            var time = coordinates[i+3];
+        for (var i = 0; i < coordinates.length; i += 5) {
+            var city = coordinates[i];
+            var latitude = coordinates[i + 1];
+            var longitude = coordinates[i + 2];
+            var height = coordinates[i + 3];
+            var radious = coordinates[i + 4];
 
             //Ignore lines of zero height.
-            if(height === 0) {
+            if (height === 0) {
                 continue;
             }
 
-            var start = Cesium.JulianDate.fromDate(new Date(time));
-            var stop = Cesium.JulianDate.addSeconds(start, 60, new Cesium.JulianDate());
+            /*if(seriesName=="CO"){
+             if(height<35){
+             color=Cesium.Color.GREEN.withAlpha(0.5)
+             }else if(height<100){
+             color=Cesium.Color.YELLOW.withAlpha(0.5)
+             }else {
+             color=Cesium.Color.RED.withAlpha(0.5)
+             }
+             }else if(seriesName=="SO2"){
+             if(height<5){
+             color=Cesium.Color.GREEN.withAlpha(0.5)
+             }else if(height<50){
+             color=Cesium.Color.YELLOW.withAlpha(0.5)
+             }else {
+             color=Cesium.Color.RED.withAlpha(0.5)
+             }
+             }*/
 
-            if(height < constants[seriesName][1]) {
+            if (height < constants[seriesName][1]) {
                 color = "#65C68A";
             } else if (height < constants[seriesName][2]) {
                 color = "#FEE665";
@@ -257,14 +266,100 @@ WebGLGlobeDataSource.prototype.load = function(data) {
             var color = Cesium.Color.fromCssColorString(color);
             //The polyline instance itself needs to be on an entity.
             var entity = new Cesium.Entity({
+                name: city + " " + seriesName + " average: " + height + ' PPM',
+                show: show,
+                position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
+                seriesName: seriesName, //Custom property to indicate series name
+                ellipse: {
+                    semiMinorAxis: radious * 1000,
+                    semiMajorAxis: radious * 1000,
+                    extrudedHeight: height * heightScale,
+                    //rotation : Cesium.Math.toRadians(45),
+                    material: color,
+                    outline: false
+                }
+                //availability:new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+                //    start : start,
+                //    stop : stop
+                //})]),
+
+            });
+
+
+            entities.add(entity);
+        }
+    }
+
+    entities.add(new Cesium.Entity({
+        //id : seriesName + ' PPM: '+height + " ID: "+i.toString(),
+        show: show,
+        name: ' PPM ',
+        position: Cesium.Cartesian3.fromDegrees(7.284459, 80.637459),
+        seriesName: seriesName, //Custom property to indicate series name
+        point: {
+            pixelSize: 10,
+            color: Cesium.Color.fromCssColorString('#FEB065')
+        },
+        //availability:new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+        //    start : start,
+        //    stop : stop
+        //})]),
+
+    }));
+    console.log("dogs");
+    ////////////// For Dots
+    for (var x = 0; x < dots.length; x++) {
+        var series = dots[x];
+        var seriesName = series[0];
+        var coordinates = series[1];
+        console.log("dogs1");
+        //Add the name of the series to our list of possible values.
+        this._seriesNames.push(seriesName);
+
+        //Make the first series the visible one by default
+        var show = x === 0;
+        if (show) {
+            this._seriesToDisplay = seriesName;
+        }
+
+        //Now loop over each coordinate in the series and create
+        // our entities from the data.
+        for (var i = 0; i < coordinates.length; i += 4) {
+            var latitude = 7.284459;//coordinates[i];
+            var longitude = 80.637459;//coordinates[i + 1];
+            var height = coordinates[i + 2];
+            var time = coordinates[i + 3];
+
+            //Ignore lines of zero height.
+            if (height === 0) {
+                continue;
+            }
+
+            var start = Cesium.JulianDate.fromDate(new Date(time));
+            var stop = Cesium.JulianDate.addSeconds(start, 60, new Cesium.JulianDate());
+
+            if (height < constants[seriesName][1]) {
+                color = "#65C68A";
+            } else if (height < constants[seriesName][2]) {
+                color = "#FEE665";
+            } else if (height < constants[seriesName][3]) {
+                color = "#FEB065";
+            } else {
+                color = "#FE6465";
+            }
+            color = "#0000FF";
+
+            var color = Cesium.Color.fromCssColorString(color);
+            //The polyline instance itself needs to be on an entity.
+            var entity = new Cesium.Entity({
                 //id : seriesName + ' PPM: '+height + " ID: "+i.toString(),
-                show : show,
+                show: show,
                 name: seriesName + ": " + height + ' PPM ',
-                position :Cesium.Cartesian3.fromDegrees(longitude, latitude),
-                seriesName : seriesName, //Custom property to indicate series name
-                point : {
-                    pixelSize : 10,
-                    color : color
+                position: Cesium.Cartesian3.fromDegrees(longitude, latitude),
+                seriesName: seriesName, //Custom property to indicate series name
+                point: {
+                    pixelSize: 10,
+                    color: color
                 },
                 //availability:new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
                 //    start : start,
@@ -278,13 +373,14 @@ WebGLGlobeDataSource.prototype.load = function(data) {
         }
     }
 
+    //////////////
     //Once all data is processed, call resumeEvents and raise the changed event.
     entities.resumeEvents();
     this._changed.raiseEvent(this);
     this._setLoading(false);
 };
 
-WebGLGlobeDataSource.prototype._setLoading = function(isLoading) {
+WebGLGlobeDataSource.prototype._setLoading = function (isLoading) {
     if (this._isLoading !== isLoading) {
         this._isLoading = isLoading;
         this._loading.raiseEvent(this, isLoading);
@@ -303,17 +399,40 @@ console.log("loaded");
 var viewer = new Cesium.Viewer('cesiumContainer', {
     animation: false,
     timeline: false,
-    sceneMode : Cesium.SceneMode.SCENE2D,
+    sceneMode: Cesium.SceneMode.COLUMBUS_VIEW,
     //imageryProvider:new BingMapsImageryProvider(),
-    imageryProvider:  new Cesium.ArcGisMapServerImageryProvider({
-        url : 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer',
+    imageryProvider: new Cesium.ArcGisMapServerImageryProvider({
+        url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer',
         //mapStyle : Cesium.BingMapsStyle.ROAD
     }),
 
-    baseLayerPicker:false
+    baseLayerPicker: false
 });
 viewer.clock.shouldAnimate = false;
 viewer.dataSources.add(dataSource);
+//viewer.selectedImageryProviderViewModel =new Cesium.ProviderViewModel(options);
+
+//viewer.imageryLayers.pickImageryLayerFeatures();
+
+
+//var start = Cesium.JulianDate.fromDate(new Date("Thu Dec 17 2015 00:00:00"));
+//var stop = Cesium.JulianDate.fromDate(new Cesium.JulianDate());
+////Make sure viewer is at the desired time.
+//viewer.clock.startTime = start.clone();
+//viewer.clock.stopTime = stop.clone();
+//viewer.clock.currentTime = start.clone();
+//viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
+//viewer.clock.multiplier = 10;
+//viewer.timeline.zoomTo(start, stop);
+//viewer.clock.shouldAnimate = true;
+
+
+//After the initial load, create buttons to let the user switch among series.
+function createSeriesSetter(seriesName) {
+    return function () {
+        dataSource.seriesToDisplay = seriesName;
+    };
+}
 
 var options = [];
 for (var i = 0; i < dataSource.seriesNames.length; i++) {
@@ -323,25 +442,47 @@ for (var i = 0; i < dataSource.seriesNames.length; i++) {
 
 Manager.addToolbarMenu(options, "combo1");
 
-var start = Cesium.JulianDate.fromDate(new Date("Thu Dec 17 2015 00:00:00"));
-var stop = Cesium.JulianDate.fromDate(new Date());
-////Make sure viewer is at the desired time.
-viewer.clock.startTime = start.clone();
-viewer.clock.stopTime = stop.clone();
-viewer.clock.currentTime = start.clone();
-viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP; //Loop at the end
-viewer.clock.multiplier = 10;
-viewer.timeline.zoomTo(start, stop);
-viewer.clock.shouldAnimate = true;
 
+document.getElementById('toolbar').style.width = '10%';
 
-//After the initial load, create buttons to let the user switch among series.
-function createSeriesSetter(seriesName) {
-    return function() {
-        dataSource.seriesToDisplay = seriesName;
-        updateLegend(constants[seriesName]);
-    };
-}
+/*
+ var greenCircle = viewer.entities.add({
+ position: Cesium.Cartesian3.fromDegrees(-111.0, 40.0, 150000.0),
+ name : 'Green circle at height',
+ ellipse : {
+ semiMinorAxis : 300000.0,
+ semiMajorAxis : 300000.0,
+ height: 200000.0,
+ material : Cesium.Color.YELLOW.withAlpha(0.5)
+ }
+ });
+
+ var redEllipse = viewer.entities.add({
+ position: Cesium.Cartesian3.fromDegrees(-103.0, 40.0),
+ name : 'Red ellipse on surface with outline',
+ ellipse : {
+ semiMinorAxis : 250000.0,
+ semiMajorAxis : 250000.0,
+ material : Cesium.Color.GREEN.withAlpha(0.5),
+ outline : false,
+ outlineColor : Cesium.Color.GREEN
+ }
+ });
+
+ var blueEllipse = viewer.entities.add({
+ position: Cesium.Cartesian3.fromDegrees(-95.0, 40.0, 100000.0),
+ name : 'Blue translucent, rotated, and extruded ellipse with outline',
+ ellipse : {
+ semiMinorAxis : 150000.0,
+ semiMajorAxis : 150000.0,
+ extrudedHeight : 0,
+ //rotation : Cesium.Math.toRadians(45),
+ material : Cesium.Color.RED.withAlpha(0.5),
+ outline : false
+ }
+ });
+ */
+viewer.zoomTo(viewer.entities);
 
 function updateLegend(values) {
     $("#text1").text(values[0] + " ppm");
@@ -349,6 +490,7 @@ function updateLegend(values) {
     $("#text3").text(values[2] + " ppm");
     $("#text4").text(values[3] + " ppm");
 }
+
 
 document.getElementById('toolbar').style.width = '10%';
 selectedText = $("#combo1 option:selected").html(); //updates the legend after the initial load
