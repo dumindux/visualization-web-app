@@ -23,7 +23,7 @@ var WebGLGlobeDataSource = function(name) {
     this._entityCollection = new Cesium.EntityCollection();
     this._seriesNames = [];
     this._seriesToDisplay = undefined;
-    this._heightScale = 1000;
+    this._heightScale = 1000000000;
 };
 
 Object.defineProperties(WebGLGlobeDataSource.prototype, {
@@ -242,11 +242,12 @@ WebGLGlobeDataSource.prototype.load = function(data) {
 
         //Now loop over each coordinate in the series and create
         // our entities from the data.
-        for (var i = 0; i < coordinates.length; i += 4) {
+        for (var i = 0; i < coordinates.length; i += 3) {
             var latitude = coordinates[i];
             var longitude = coordinates[i + 1];
             var height = coordinates[i + 2];
-            var time = coordinates[i+3];
+            console.log(latitude+" "+longitude);
+            //var time = coordinates[i+3];
 
             //Ignore lines of zero height.
             if(height === 0) {
@@ -289,8 +290,8 @@ WebGLGlobeDataSource.prototype.load = function(data) {
             //
             //var avai = new Cesium.TimeIntervalCollection(time);
 
-            var start = Cesium.JulianDate.fromDate(new Date(time));
-            var stop = Cesium.JulianDate.addSeconds(start, 60 * 60, new Cesium.JulianDate());
+            //var start = Cesium.JulianDate.fromDate(new Date(time));
+            //var stop = Cesium.JulianDate.addSeconds(start, 60 * 60, new Cesium.JulianDate());
             ////////////////////
 
             //The polyline instance itself needs to be on an entity.
@@ -299,10 +300,10 @@ WebGLGlobeDataSource.prototype.load = function(data) {
                 show : show,
                 polyline : polyline,
                 seriesName : seriesName, //Custom property to indicate series name
-                availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
-                    start: start,
-                    stop: stop
-                })]),
+               // availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+                //    start: start,
+                //    stop: stop
+               // })]),
                 name: seriesName + ": " + height + " PPM"
             });
 

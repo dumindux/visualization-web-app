@@ -228,6 +228,8 @@ WebGLGlobeDataSource.prototype.load = function(data) {
             var height = coordinates[i + 3];
             var radious = coordinates[i + 4];
 
+            console.log(series+" "+ seriesName+" "+city+" "+latitude+" "+longitude+" "+height+" "+radious);
+
             //Ignore lines of zero height.
             if(height === 0) {
                 continue;
